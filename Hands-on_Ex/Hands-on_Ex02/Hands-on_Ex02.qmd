@@ -7,9 +7,7 @@ author: "Vivian Fan Jing"
 
 In this chapter, you will be introduced to several ggplot2 extensions for creating more elegant and effective statistical graphics. By the end of this exercise, you will be able to:
 
-control the placement of annotation on a graph by using functions provided in ggrepel package,
-create professional publication quality figure by using functions provided in ggthemes and hrbrthemes packages,
-plot composite figure by combining ggplot2 graphs by using patchwork package.
+control the placement of annotation on a graph by using functions provided in ggrepel package, create professional publication quality figure by using functions provided in ggthemes and hrbrthemes packages, plot composite figure by combining ggplot2 graphs by using patchwork package.
 
 # 2.2 Getting started
 
@@ -46,7 +44,6 @@ ggtitle("English scores versus Maths scores for Primary 3")
 
 ggplot2 comes with eight built-in themes, they are: theme_gray(), theme_bw(), theme_classic(), theme_dark(), theme_light(), theme_linedraw(), theme_minimal(), and theme_void().
 
-
 ```{r}
 ggplot(data = exam_data, 
        aes(x = MATHS)) + 
@@ -57,6 +54,7 @@ ggplot(data = exam_data,
   theme_gray() + 
   ggtitle("Distribution of Maths scores")
 ```
+
 ## 2.4.1 Working with ggtheme package
 
 ggthemes provides ‘ggplot2’ themes that replicate the look of plots by Edward Tufte, Stephen Few, Fivethirtyeight, The Economist, ‘Stata’, ‘Excel’, and The Wall Street Journal, among others.
@@ -177,9 +175,7 @@ print(composite_plot)
 
 We can plot more complex composite by using appropriate operators. For example, the composite figure below is plotted by using:
 
-“/” operator to stack two ggplot2 graphs,
-“|” operator to place the plots beside each other,
-“()” operator the define the sequence of the plotting.
+“/” operator to stack two ggplot2 graphs, “\|” operator to place the plots beside each other, “()” operator the define the sequence of the plotting.
 
 ```{r}
 library(ggplot2)
@@ -251,7 +247,6 @@ composite_plot <- (hist1 / hist2) | hist3 +
 plot_annotation(tag_levels = 'I')
 print(composite_plot)
 ```
-
 
 ## 2.5.5 Creating figure with insert
 
