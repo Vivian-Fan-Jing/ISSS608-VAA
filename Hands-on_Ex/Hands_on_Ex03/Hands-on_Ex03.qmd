@@ -125,6 +125,7 @@ girafe(
 ```
 
 
+
 ## 3.6.2 Displaying statistics on tooltip
 
 Code chunk below shows an advanced way to customise tooltip. In this example, a function is used to compute 90% confident interval of the mean. The derived statistics are then displayed in the tooltip.
