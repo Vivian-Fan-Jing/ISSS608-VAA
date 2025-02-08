@@ -1,0 +1,122 @@
+---
+title: "Hands-on_Ex04"
+author: "Vivian Fan Jing"
+---
+
+# Visual Statistical Analysis
+
+# 10.2 Visual Statistical Analysis with ggstatsplot
+
+[**ggstatsplot**](https://indrajeetpatil.github.io/ggstatsplot/index.html) is an extension of [**ggplot2**](https://ggplot2.tidyverse.org/) package for creating graphics with details from statistical tests included in the information-rich plots themselves.
+
+-   To provide alternative statistical inference methods by default.
+-   To follow best practices for statistical reporting. For all statistical tests reported in the plots, the default template abides by the [APA](https://my.ilstu.edu/~jhkahn/apastats.html) gold standard for statistical reporting.
+
+# 10.3 Getting Started
+
+## 10.3.1 Installing and launching R packages
+
+In this exercise, ggstatsplot and tidyverse will be used.
+
+```{r}
+pacman::p_load(ggstatsplot, tidyverse)
+```
+
+## 10.3.2 Importing data
+
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+## 10.3.3 One-sample test: gghistostats() method
+
+In the code chunk below, [*gghistostats()*](https://indrajeetpatil.github.io/ggstatsplot/reference/gghistostats.html) is used to to build an visual of one-sample test on English scores.
+
+```{r}
+set.seed(1234)
+
+gghistostats(
+  data = exam_data,
+  x = ENGLISH,
+  type = "bayes",
+  test.value = 60,
+  xlab = "English scores"
+)
+```
+
+Default information: - statistical details - Bayes Factor - sample sizes - distribution summary
+
+## 10.3.6 Two-sample mean test: ggbetweenstats()
+
+In the code chunk below, [*ggbetweenstats()*](https://indrajeetpatil.github.io/ggstatsplot/reference/ggbetweenstats.html) is used to build a visual for two-sample mean test of Maths scores by gender
+
+```{r}
+ggbetweenstats(
+  data = exam_data,
+  x = GENDER, 
+  y = MATHS,
+  type = "np",
+  messages = FALSE
+)
+```
+
+Default information: - statistical details - Bayes Factor - sample sizes - distribution summary
+
+## 10.3.7 Oneway ANOVA Test: ggbetweenstats() method
+
+In the code chunk below, [*ggbetweenstats()*](https://indrajeetpatil.github.io/ggstatsplot/reference/ggbetweenstats.html) is used to build a visual for One-way ANOVA test on English score by race.
+
+```{r}
+ggbetweenstats(
+  data = exam_data,
+  x = RACE, 
+  y = ENGLISH,
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE
+)
+```
+
+-   “ns” → only non-significant
+
+-   “s” → only significant
+
+-   “all” → everything
+
+## 10.3.8 Significant Test of Correlation: ggscatterstats()
+
+In the code chunk below, [*ggscatterstats()*](https://indrajeetpatil.github.io/ggstatsplot/reference/ggscatterstats.html) is used to build a visual for Significant Test of Correlation between Maths scores and English scores.
+
+```{r}
+ggscatterstats(
+  data = exam_data,
+  x = MATHS,
+  y = ENGLISH,
+  marginal = FALSE,
+  )
+```
+
+## 10.3.9 Significant Test of Association (Depedence) : ggbarstats() methods
+
+In the code chunk below, the Maths scores is binned into a 4-class variable by using [*cut()*](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/cut).
+
+In this code chunk below [*ggbarstats()*](https://indrajeetpatil.github.io/ggstatsplot/reference/ggbarstats.html) is used to build a visual for Significant Test of Association
+
+```{r}
+exam1 <- exam_data %>%
+  mutate(MATHS_bins = 
+           cut(MATHS, 
+               breaks = c(0,60,75,85,100))
+)
+
+ggbarstats(exam1, 
+           x = MATHS_bins, 
+           y = GENDER)
+```
+
+
+
+
