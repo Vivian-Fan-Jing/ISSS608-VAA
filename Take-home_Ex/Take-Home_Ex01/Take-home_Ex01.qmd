@@ -2,11 +2,8 @@
 title: "Take-home_Ex01"
 author: "Vivian Fan Jing"
 date: "February 16, 2025"
-execute: 
-  echo:true
-  eval: true
+execute:
   warning: false
-  freeze: true
 ---
 
 # 1.Getting started
@@ -14,13 +11,13 @@ execute:
 ## 1.1 Installing and loading the required libraries
 
 ```{r}
-pacman::p_load(ggdist, ggridges, ggthemes,
-               colorspace, tidyverse,ggplot2)
+pacman::p_load(ggiraph,plotly,patchwork, ggdist, 
+               ggridges, ggthemes, colorspace, tidyverse,ggplot2, ggExtra)
 ```
 
 ## 1.2 Importing data
 
-For the purpose of this exercise, a data file called japan_heart_attack_dataset will be used. It consists of 30,000 people from urban and rural regions. It is in csv file format.
+For the purpose of this exercise, a data file called japan_heart_attack_dataset will be used. It consists of 30,000 observations. It is in csv file format.
 
 ```{r}
 heart_data <- read_csv("data/japan_heart_attack_dataset.csv")
@@ -32,7 +29,7 @@ There are a total of seven attributes in the heart_data tibble data frame. Ten o
 
 -   The continuous attributes are: Age, Cholesterol_Level, Stress_Levels, BMI, Heart_Rate, Systolic_BP, Diastolic_BP
 
-# 2 Understand the Data
+# 2 Understanding the Data
 
 Heart attack is the leading cause of death in the world. Heart attacks are mostly caused by your lifestyle. Do you smoke? Do you exercise? Do you eat right? Are you overweight? Do you keep your blood pressure under control? heart disease incorporates your family history.
 
@@ -52,7 +49,11 @@ ggplot(heart_data, aes(x = Gender, fill = Heart_Attack_Occurrence)) +
   xlab("Gender") + ylab("Count")
 ```
 
-## 2.2 Reviewing the dataset to understand Health Metrics Variables- Cholesterol_level,Stress_levels, BMI, Heart_Rate, Systolic_BP, Diastolic_BP
+## 2.2 Reviewing the dataset to understand Health Metrics Variables
+
+Health metrics are key indicators that can help identify an individual's heart attack, including Cholesterol_level,Stress_levels, BMI, Heart_Rate, Systolic_BP, Diastolic_BP. These metrics are measurable factors related to a person's overall health and lifestyle. When certain health metrics are not in an ideal range, they can contribute to the development of heart disease, which in turn increases the risk of a heart attack. 
+
+### 2.2.1 Measure Cholesterol_level in relation to Heart_Attack_Occurence
 
 ```{r}
 ggplot(heart_data, aes(x = Age, y = Cholesterol_Level)) +
@@ -60,6 +61,118 @@ ggplot(heart_data, aes(x = Age, y = Cholesterol_Level)) +
   ggtitle("Cholesterol_Level vs Age for Heart_Attack_Occurrence") +
   xlab("Age") + ylab("Cholesterol_Level")
 ```
+Discover the distribution of Heart_Attack_Occurrence == "Yes" based on Cholesterol Level. I use the dplyr package in R to group the data and the ggplot2 package to draw a histogram. 
+
+```{r}
+library(dplyr)
+heart_attack_yes <- heart_data %>%
+  filter(Heart_Attack_Occurrence == "Yes")
+
+ggplot(heart_attack_yes, aes(x = Cholesterol_Level)) +
+  geom_histogram(binwidth = 10, fill = "grey", color = "black", alpha = 0.7) +
+  labs(
+    title = "Distribution of Cholesterol Level for Heart Attack Occurrence",
+    x = "Cholesterol Level (mg/dL)",
+    y = "Frequency"
+  ) +
+  theme_classic()
+```
+
+To analyze Cholesterol_Level by age among individuals who had a heart attack, I look at the relationship between age and cholesterol level for people in the heart attack group.
+Code chunk below shows an advanced way to customize tooltip. A function is used to compute 90% confident interval of the mean. The derived statistics are then displayed in the tooltip.
+
+```{r}
+tooltip <- function(y, ymax, accuracy = .01) {
+  mean <- scales::number(y, accuracy = accuracy)
+  sem <- scales::number(ymax - y, accuracy = accuracy)
+  paste("Mean Cholesterol_Level:", mean, "+/-", sem)
+}
+
+gg_point <- ggplot(data=heart_attack_yes, 
+                   aes(x = Age),
+) +
+  stat_summary(aes(y = Cholesterol_Level, 
+                   tooltip = after_stat(  
+                     tooltip(y, ymax))),  
+    fun.data = "mean_se", 
+    geom = GeomInteractiveCol,  
+    fill = "light blue"
+  ) +
+  stat_summary(aes(y = Cholesterol_Level),
+    fun.data = mean_se,
+    geom = "errorbar", width = 0.8, size = 0.2
+  )
+
+girafe(ggobj = gg_point,
+       width_svg = 8,
+       height_svg = 8*0.618)
+```
+
+### 2.2.2 Measure BMI and stress level in relation to Heart_Attack_Occurence
+
+Creating an interactive scatter plot: plot_ly() method to measure stress_level and BMI together in relation to heart attack occurrence and see how they relate or distribute together.
+
+```{r}
+plot_ly(data = heart_data, 
+             x = ~BMI, 
+             y = ~Stress_Levels,
+             color = ~Heart_Attack_Occurrence)
+```
+
+
+### 2.2.3 Measure Heart_Rate in relation to Heart_Attack_Occurence
+
+Creating a scatter plot with a marginal distribution (boxplot) to visualize the relationship between Heart Rate and Cholesterol Level and calculate the mean of Heart Rate and Cholesterol Level for both female and male individuals. I color the Gender to compare the distribution by Gender(Female and Male).
+
+```{r}
+p1 <- ggplot(data=heart_attack_yes, 
+            aes(x= Cholesterol_Level, 
+                y= Heart_Rate, 
+                color=Gender)) +
+  geom_point() +
+  coord_cartesian(xlim=c(90,320),
+                  ylim=c(30,110))
+
+ggMarginal(p1, type = "boxplot",
+           groupColour = TRUE, 
+           groupFill = TRUE)
+```
+
+### 2.2.4 Measure Systolic_BP and Diastolic_BP in relation to Heart_Attack_Occurence
+
+```{r}
+p2 <- ggplot(data=heart_data, aes(x = Heart_Attack_Occurrence, y = Systolic_BP , color = Heart_Attack_Occurrence)) +
+  geom_jitter() +
+  labs(
+    title = "Systolic Blood Pressure",
+    x = "Heart Attack Occurrence",
+    y = "Systolic Blood Pressure (mmHg)"
+  ) +
+  theme_classic()
+
+p3 <- ggplot(data=heart_data, aes(x = Heart_Attack_Occurrence, y = Diastolic_BP , color = Heart_Attack_Occurrence)) +
+  geom_jitter() +
+  labs(
+    title = "Diastolic Blood Pressure",
+    x = "Heart Attack Occurrence",
+    y = "Diastolic Blood Pressure (mmHg)"
+  ) +
+  theme_classic()
+
+p4 <- ggplot(data=heart_attack_yes, 
+             aes(x= Systolic_BP, 
+                 y= Diastolic_BP)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  coord_cartesian(xlim=c(60,170),
+                  ylim=c(40,115)) +
+  ggtitle("Systolic_BP and Diastolic_BP for Heart_Attack ")
+
+(p2 / p3) | p4
+
+```
+
 
 ## 2.3 Reviewing the dataset to understand Other health conditions Variables- Smoking_History, Diabetes_History, Hypertension_History, Family_History
 

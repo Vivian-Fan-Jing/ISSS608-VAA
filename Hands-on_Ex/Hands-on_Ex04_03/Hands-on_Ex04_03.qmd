@@ -1,6 +1,9 @@
 ---
 title: "Hands-on_Ex04_03"
 author: "Vivian Fan Jing"
+execute:
+  warning: false
+  freeze: true
 ---
 
 # Funnel Plots for Fair Comparisons
