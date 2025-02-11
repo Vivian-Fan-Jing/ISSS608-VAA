@@ -178,18 +178,15 @@ p <- ggplot(df, aes(x = Positive, y = rate)) +
         legend.text = element_text(size=7),
         legend.background = element_rect(colour = "grey60", linetype = "dotted"),
         legend.key.height = unit(0.3, "cm"))
+p
 ```
-
-## 12.5.4 Interactive Funnel Plot: plotly + ggplot2
-
-The funnel plot created using ggplot2 functions can be made interactive with ggplotly() of plotly r package.
-
 ```{r}
 fp_ggplotly <- ggplotly(p,
   tooltip = c("label", 
               "x", 
               "y"))
 fp_ggplotly
+
 ```
 
 ## **12.6 References**

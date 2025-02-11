@@ -1,4 +1,65 @@
 ---
 title: "Take-home_Ex01"
 author: "Vivian Fan Jing"
+date: "February 16, 2025"
+execute: 
+  echo:true
+  eval: true
+  warning: false
+  freeze: true
 ---
+
+# 1.Getting started
+
+## 1.1 Installing and loading the required libraries
+
+```{r}
+pacman::p_load(ggdist, ggridges, ggthemes,
+               colorspace, tidyverse,ggplot2)
+```
+
+## 1.2 Importing data
+
+For the purpose of this exercise, a data file called japan_heart_attack_dataset will be used. It consists of 30,000 people from urban and rural regions. It is in csv file format.
+
+```{r}
+heart_data <- read_csv("data/japan_heart_attack_dataset.csv")
+```
+
+There are a total of seven attributes in the heart_data tibble data frame. Ten of them are categorical data type and the other seven are in continuous data type.
+
+-   The categorical attributes are: Gender, Region, Smoking_History, Diabetes_History, Hypertension_History, Physical_Activity, Diet_Quality, Alcohol_Consumption, Family_History,Heart_Attack_Occurrence
+
+-   The continuous attributes are: Age, Cholesterol_Level, Stress_Levels, BMI, Heart_Rate, Systolic_BP, Diastolic_BP
+
+# 2 Understand the Data
+
+Heart attack is the leading cause of death in the world. Heart attacks are mostly caused by your lifestyle. Do you smoke? Do you exercise? Do you eat right? Are you overweight? Do you keep your blood pressure under control? heart disease incorporates your family history.
+
+## 2.1 Reviewing the dataset to understand Demographics Variables- Age & Gender
+
+```{r}
+ggplot(heart_data, aes(x = Age, fill = Heart_Attack_Occurrence)) +
+  geom_histogram(bins = 30, alpha = 0.7, position = "dodge") +
+  ggtitle("Age Distribution by Heart_Attack_Occurrence") +
+  xlab("Age") + ylab("Count")
+```
+
+```{r}
+ggplot(heart_data, aes(x = Gender, fill = Heart_Attack_Occurrence)) +
+  geom_bar(alpha = 0.7) +
+  ggtitle("Gender Distribution by Heart_Attack_Occurrence") +
+  xlab("Gender") + ylab("Count")
+```
+
+## 2.2 Reviewing the dataset to understand Health Metrics Variables- Cholesterol_level,Stress_levels, BMI, Heart_Rate, Systolic_BP, Diastolic_BP
+
+```{r}
+ggplot(heart_data, aes(x = Age, y = Cholesterol_Level)) +
+  geom_point(aes(color = Heart_Attack_Occurrence)) +
+  ggtitle("Cholesterol_Level vs Age for Heart_Attack_Occurrence") +
+  xlab("Age") + ylab("Cholesterol_Level")
+```
+
+## 2.3 Reviewing the dataset to understand Other health conditions Variables- Smoking_History, Diabetes_History, Hypertension_History, Family_History
+
