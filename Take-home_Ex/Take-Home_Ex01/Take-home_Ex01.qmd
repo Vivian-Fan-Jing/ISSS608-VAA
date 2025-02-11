@@ -25,7 +25,7 @@ heart_data <- read_csv("data/japan_heart_attack_dataset.csv")
 
 There are a total of seven attributes in the heart_data tibble data frame. Ten of them are categorical data type and the other seven are in continuous data type.
 
--   The categorical attributes are: Gender, Region, Smoking_History, Diabetes_History, Hypertension_History, Physical_Activity, Diet_Quality, Alcohol_Consumption, Family_History,Heart_Attack_Occurrence
+-   The categorical attributes are: Gender, Region, Smoking_History(Binary), Diabetes_History(Binary), Hypertension_History(Binary), Physical_Activity, Diet_Quality, Alcohol_Consumption, Family_History(Binary),Heart_Attack_Occurrence(Binary)
 
 -   The continuous attributes are: Age, Cholesterol_Level, Stress_Levels, BMI, Heart_Rate, Systolic_BP, Diastolic_BP
 
@@ -33,7 +33,9 @@ There are a total of seven attributes in the heart_data tibble data frame. Ten o
 
 Heart attack is the leading cause of death in the world. Heart attacks are mostly caused by your lifestyle. Do you smoke? Do you exercise? Do you eat right? Are you overweight? Do you keep your blood pressure under control? heart disease incorporates your family history.
 
-## 2.1 Reviewing the dataset to understand Demographics Variables- Age & Gender
+## 2.1 Reviewing the dataset to understand Demographics Variables
+
+### 2.1.1 Distribution and relationships involving Age
 
 ```{r}
 ggplot(heart_data, aes(x = Age, fill = Heart_Attack_Occurrence)) +
@@ -41,6 +43,8 @@ ggplot(heart_data, aes(x = Age, fill = Heart_Attack_Occurrence)) +
   ggtitle("Age Distribution by Heart_Attack_Occurrence") +
   xlab("Age") + ylab("Count")
 ```
+
+### 2.1.2 Distribution and relationships involving Gender
 
 ```{r}
 ggplot(heart_data, aes(x = Gender, fill = Heart_Attack_Occurrence)) +
@@ -53,7 +57,7 @@ ggplot(heart_data, aes(x = Gender, fill = Heart_Attack_Occurrence)) +
 
 Health metrics are key indicators that can help identify an individual's heart attack, including Cholesterol_level,Stress_levels, BMI, Heart_Rate, Systolic_BP, Diastolic_BP. These metrics are measurable factors related to a person's overall health and lifestyle. When certain health metrics are not in an ideal range, they can contribute to the development of heart disease, which in turn increases the risk of a heart attack. 
 
-### 2.2.1 Measure Cholesterol_level in relation to Heart_Attack_Occurence
+### 2.2.1 Measure Cholesterol_level variable
 
 ```{r}
 ggplot(heart_data, aes(x = Age, y = Cholesterol_Level)) +
@@ -108,7 +112,7 @@ girafe(ggobj = gg_point,
        height_svg = 8*0.618)
 ```
 
-### 2.2.2 Measure BMI and stress level in relation to Heart_Attack_Occurence
+### 2.2.2 Measure BMI and stress level variables
 
 Creating an interactive scatter plot: plot_ly() method to measure stress_level and BMI together in relation to heart attack occurrence and see how they relate or distribute together.
 
@@ -120,7 +124,7 @@ plot_ly(data = heart_data,
 ```
 
 
-### 2.2.3 Measure Heart_Rate in relation to Heart_Attack_Occurence
+### 2.2.3 Measure Heart_Rate variable
 
 Creating a scatter plot with a marginal distribution (boxplot) to visualize the relationship between Heart Rate and Cholesterol Level and calculate the mean of Heart Rate and Cholesterol Level for both female and male individuals. I color the Gender to compare the distribution by Gender(Female and Male).
 
@@ -138,7 +142,7 @@ ggMarginal(p1, type = "boxplot",
            groupFill = TRUE)
 ```
 
-### 2.2.4 Measure Systolic_BP and Diastolic_BP in relation to Heart_Attack_Occurence
+### 2.2.4 Measure Blood pressure (Systolic_BP and Diastolic_BP) variable
 
 ```{r}
 p2 <- ggplot(data=heart_data, aes(x = Heart_Attack_Occurrence, y = Systolic_BP , color = Heart_Attack_Occurrence)) +
@@ -170,9 +174,35 @@ p4 <- ggplot(data=heart_attack_yes,
   ggtitle("Systolic_BP and Diastolic_BP for Heart_Attack ")
 
 (p2 / p3) | p4
-
 ```
 
+Observation: Based on the plot, there is no clear linear relationship between Blood Pressure and heart attack
 
-## 2.3 Reviewing the dataset to understand Other health conditions Variables- Smoking_History, Diabetes_History, Hypertension_History, Family_History
+## 2.3 Reviewing the dataset to understand Other health conditions Variables
+
+### 2.3.1 Measure Smoking_History variable
+
+To review the dataset and understand the Other Health Conditions Variables such as Smoking History, Diabetes History, Hypertension History, and Family History in relation to heart attack occurrence, it will help us understand the distributions, relationships, and any potential impact these variables have on the occurrence of heart attacks.
+
+```{r}
+ggplot(heart_data, aes(x = Smoking_History, fill = Heart_Attack_Occurrence)) +
+  geom_bar(position = "fill") +
+  labs(title = "Smoking History by Heart Attack Occurrence", x = "Smoking History", y = "Proportion") +
+  scale_fill_manual(values = c("lightblue", "pink")) +
+  theme_classic()
+```
+
+Observation: Based on the bar chart, proportion of Heart_Attack_Occurrence for smokers and non-smokers is almost the same. It suggests that smoking may not have a clear or strong direct association with heart attack occurrence in the dataset
+
+
+### 2.3.2 Measure Smoking_History and Alcohol_Consumption variable
+
+```{r}
+ggplot(heart_data, aes(x = Alcohol_Consumption, fill = Heart_Attack_Occurrence)) +
+  geom_bar(position = "fill") +
+  facet_wrap(~ Smoking_History) +  # Check across different age groups
+  labs(title = "Heart Attack Occurrence by Smoking History and Alcohol_Consumption")
+```
+
+Observation: Combining Smoking History and Alcohol Consumption doesn't reveal a clear relationship with Heart Attack Occurrence.
 
