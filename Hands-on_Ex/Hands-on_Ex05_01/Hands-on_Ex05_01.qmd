@@ -1,0 +1,247 @@
+---
+title: "Hands-on_Ex05_01"
+author: "Vivian Fan Jing"
+date: "February 12, 2025"
+execute:
+  warning: false
+---
+
+# 6 Visual Correlation Analysis
+
+Plot data visualisation for visualising correlation matrix with R
+
+## 6.2 Installing and Launching R Packages
+
+```{r}
+pacman::p_load(corrplot, ggstatsplot, tidyverse)
+```
+
+## 6.3 Importing and Preparing The Data Set
+
+### 6.3.1 Importing Data
+
+```{r}
+wine <- read_csv("data/wine_quality.csv")
+```
+
+## 6.4 Building Correlation Matrix: pairs() method
+
+### 6.4.1 Building a basic correlation matrix
+
+```{r}
+pairs(wine[,1:11])
+```
+
+```{r}
+pairs(wine[,2:12])
+```
+
+### 6.4.2 Drawing the lower corner
+
+To show the lower half of the correlation matrix, the upper.panel argument will be used as shown in the code chunk below.
+
+```{r}
+pairs(wine[,2:12], upper.panel = NULL)
+```
+
+Display the upper half of the correlation matrix by using the code chunk below.
+
+```{r}
+pairs(wine[,2:12], lower.panel = NULL)
+```
+
+### 6.4.3 Including with correlation coefficients
+
+To show the correlation coefficient of each pair of variables instead of a scatter plot, panel.cor function will be used. This will also show higher correlations in a larger font.
+
+```{r}
+panel.cor <- function(x, y, digits=2, prefix="", cex.cor, ...) {
+usr <- par("usr")
+on.exit(par(usr))
+par(usr = c(0, 1, 0, 1))
+r <- abs(cor(x, y, use="complete.obs"))
+txt <- format(c(r, 0.123456789), digits=digits)[1]
+txt <- paste(prefix, txt, sep="")
+if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+text(0.5, 0.5, txt, cex = cex.cor * (1 + r) / 2)
+}
+
+pairs(wine[,2:12], 
+      upper.panel = panel.cor)
+```
+
+6.5 Visualising Correlation Matrix: ggcormat()
+
+The are at least three R packages provide function to plot corrgram, they are:
+
+-   [corrgram](https://cran.r-project.org/web/packages/corrgram/index.html)
+
+-   [ellipse](https://cran.r-project.org/web/packages/ellipse/index.html)
+
+-   [corrplot](https://cran.r-project.org/web/packages/corrplot/index.html)
+
+6.5.1 The basic plot
+
+On of the advantage of using ggcorrmat() over many other methods to visualise a correlation matrix is it’s ability to provide a comprehensive and yet professional statistical report as shown in the figure below.
+
+```{r}
+ggstatsplot::ggcorrmat(
+  data = wine, 
+  cor.vars = 1:11)
+```
+
+```{r}
+ggstatsplot::ggcorrmat(
+  data = wine, 
+  cor.vars = 1:11,
+  ggcorrplot.args = list(outline.color = "black", 
+                         hc.order = TRUE,
+                         tl.cex = 10),
+  title    = "Correlogram for wine dataset",
+  subtitle = "Four pairs are no significant at p < 0.05"
+)
+```
+
+Things to learn from the code chunk above:
+
+-   `cor.vars` argument is used to compute the correlation matrix needed to build the corrgram.
+
+-   `ggcorrplot.args` argument provide additional (mostly aesthetic) arguments that will be passed to [`ggcorrplot::ggcorrplot`](http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2) function. The list should avoid any of the following arguments since they are already internally being used: `corr`, `method`, `p.mat`, `sig.level`, `ggtheme`, `colors`, `lab`, `pch`, `legend.title`, `digits`.
+
+The sample sub-code chunk can be used to control specific component of the plot such as the font size of the x-axis, y-axis, and the statistical report.
+
+```{r}
+ggplot.component = list(
+    theme(text=element_text(size=5),
+      axis.text.x = element_text(size = 8),
+      axis.text.y = element_text(size = 8)))
+```
+
+# 6.6 Building multiple plots
+
+```{r}
+grouped_ggcorrmat(
+  data = wine,
+  cor.vars = 1:11,
+  grouping.var = type,
+  type = "robust",
+  p.adjust.method = "holm",
+  plotgrid.args = list(ncol = 2),
+  ggcorrplot.args = list(outline.color = "black", 
+                         hc.order = TRUE,
+                         tl.cex = 10),
+  annotation.args = list(
+    tag_levels = "a",
+    title = "Correlogram for wine dataset",
+    subtitle = "The measures are: alcohol, sulphates, fixed acidity, citric acid, chlorides, residual sugar, density, free sulfur dioxide and volatile acidity",
+    caption = "Dataset: UCI Machine Learning Repository"
+  )
+) 
+```
+
+# 6.7 Visualising Correlation Matrix using corrplot Package
+
+## 6.7.1 Getting started with corrplot
+
+```{r}
+wine.cor <- cor(wine[, 1:11])
+```
+
+```{r}
+corrplot(wine.cor)
+```
+
+## 6.7.2 Working with visual geometrics
+
+In corrplot package, there are seven visual geometrics (parameter method) can be used to encode the attribute values. They are: circle, square, ellipse, number, shade, color and pie. The default is circle. As shown in the previous section, the default visual geometric of corrplot matrix is circle. However, this default setting can be changed by using the method argument as shown in the code chunk below.
+
+```{r}
+corrplot(wine.cor, 
+         method = "ellipse") 
+```
+
+### 6.7.3 Working with layout
+
+*corrplor()* supports three layout types, namely: “full”, “upper” or “lower”. The default is “full” which display full matrix. The default setting can be changed by using the *type* argument of *corrplot()*.
+
+```{r}
+corrplot(wine.cor, 
+         method = "ellipse", 
+         type="lower")
+```
+
+The default layout of the corrgram can be further customised. For example, arguments diag and tl.col are used to turn off the diagonal cells and to change the axis text label colour to black colour respectively as shown in the code chunk and figure below.
+
+```{r}
+corrplot(wine.cor, 
+         method = "ellipse", 
+         type="lower",
+         diag = FALSE,
+         tl.col = "black")
+```
+
+### 6.7.4 Working with mixed layout
+
+With **corrplot** package, it is possible to design corrgram with mixed visual matrix of one half and numerical matrix on the other half. In order to create a coorgram with mixed layout, the [*corrplot.mixed()*](https://www.rdocumentation.org/packages/corrplot/versions/0.84/topics/corrplot.mixed), a wrapped function for mixed visualisation style will be used.
+
+```{r}
+corrplot.mixed(wine.cor, 
+               lower = "ellipse", 
+               upper = "number",
+               tl.pos = "lt",
+               diag = "l",
+               tl.col = "black")
+```
+
+### 6.7.5 Combining corrgram with the significant test
+
+```{r}
+wine.sig = cor.mtest(wine.cor, conf.level= .95)
+```
+
+```{r}
+corrplot(wine.cor,
+         method = "number",
+         type = "lower",
+         diag = FALSE,
+         tl.col = "black",
+         tl.srt = 45,
+         p.mat = wine.sig$p,
+         sig.level = .05)
+```
+
+### 6.7.6 Reorder a corrgram
+
+```{r}
+corrplot.mixed(wine.cor, 
+               lower = "ellipse", 
+               upper = "number",
+               tl.pos = "lt",
+               diag = "l",
+               order="AOE",
+               tl.col = "black")
+```
+
+### 6.7.7 Reordering a correlation matrix using hclust
+
+```{r}
+corrplot(wine.cor, 
+         method = "ellipse", 
+         tl.pos = "lt",
+         tl.col = "black",
+         order="hclust",
+         hclust.method = "ward.D",
+         addrect = 3)
+```
+
+# 7 Reference
+
+## 7.1 R packages
+
+-   [`ggcormat()`](https://indrajeetpatil.github.io/ggstatsplot/articles/web_only/ggcorrmat.html) of [**ggstatsplot**](https://indrajeetpatil.github.io/ggstatsplot/index.html) package
+
+-   [`ggscatmat`](https://ggobi.github.io/ggally/reference/ggscatmat.html) and [`ggpairs`](https://ggobi.github.io/ggally/reference/ggpairs.html) of [**GGally**](https://ggobi.github.io/ggally/index.html).
+
+-   [**corrplot**](https://cran.r-project.org/web/packages/corrplot/index.html). A graphical display of a correlation matrix or general matrix. It also contains some algorithms to do matrix reordering. In addition, corrplot is good at details, including choosing color, text labels, color labels, layout, etc.
+
+-   [**corrgram**](https://cran.r-project.org/web/packages/corrgram/index.html) calculates correlation of variables and displays the results graphically. Included panel functions can display points, shading, ellipses, and correlation values with confidence intervals.

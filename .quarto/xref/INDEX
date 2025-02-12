@@ -1,47 +1,11 @@
 {
-  "about.qmd": {
-    "about.html": "c98c8861"
+  "Hands-on_Ex/Hands-on_Ex05_02/Hands-on_Ex05_02.qmd": {
+    "Hands-on_Ex05_02.html": "7a086a91"
   },
-  "index.qmd": {
-    "index.html": "d491a72c"
+  "Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.qmd": {
+    "Hands-on_Ex05.html": "a24aa6f7"
   },
-  "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.qmd": {
-    "Hands-on_Ex01.html": "545ef93f"
-  },
-  "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.qmd": {
-    "Hands-on_Ex02.html": "f2c4e899"
-  },
-  "Hands-on_Ex/Hands_on_Ex03/Hands-on_Ex03.qmd": {
-    "Hands-on_Ex03.html": "f2d8cb2c"
-  },
-  "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.qmd": {
-    "Hands-on_Ex03.html": "10f7e1e6"
-  },
-  "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03_01.qmd": {
-    "Hands-on_Ex03_01.html": "7aebe5e8"
-  },
-  "Hands-on_Ex/Hands-on_Ex03_01/Hands-on_Ex03_01.qmd": {
-    "Hands-on_Ex03_01.html": "30f01694"
-  },
-  "In-class_Ex/In-class_Ex04/In-class_Ex04.qmd": {
-    "In-class_Ex04.html": "8c3b2fbb"
-  },
-  "Take-home Exercises/Take-Home_Ex01/Take-home_Ex01.qmd": {
-    "Take-home_Ex01.html": "3e95ec70"
-  },
-  "Take-home_Ex/Take-Home_Ex01/Take-home_Ex01.qmd": {
-    "Take-home_Ex01.html": "8f114967"
-  },
-  "Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04.qmd": {
-    "Hands-on_Ex04.html": "4de3cca1"
-  },
-  "Hands-on_Ex/Hands-on_Ex04_01/Hands-on_Ex04_01.qmd": {
-    "Hands-on_Ex04_01.html": "09b96470"
-  },
-  "Hands-on_Ex/Hands-on_Ex04_02/Hands-on_Ex04_02.qmd": {
-    "Hands-on_Ex04_02.html": "c250d556"
-  },
-  "Hands-on_Ex/Hands-on_Ex04_03/Hands-on_Ex04_03.qmd": {
-    "Hands-on_Ex04_03.html": "d90a6b75"
+  "Hands-on_Ex/Hands-on_Ex05_01/Hands-on_Ex05_01.qmd": {
+    "Hands-on_Ex05_01.html": "094c999e"
   }
 }

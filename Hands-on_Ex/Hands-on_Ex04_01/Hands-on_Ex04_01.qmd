@@ -3,7 +3,6 @@ title: "Hands-on_Ex04_01"
 author: "Vivian Fan Jing"
 execute:
   warning: false
-  freeze: true
 ---
 
 

@@ -238,9 +238,9 @@ Observation: Based on the bar chart, proportion of Heart_Attack_Occurrence for s
 ### 2.3.2 Measure Smoking_History and Alcohol_Consumption variable
 
 ```{r}
-ggplot(heart_data, aes(x = Alcohol_Consumption, fill = Heart_Attack_Occurrence)) +
+ggplot(heart_data, aes(x = Hypertension_History, fill = Heart_Attack_Occurrence)) +
   geom_bar(position = "fill") +
-  facet_wrap(~ Smoking_History) +  # Check across different age groups
+  facet_wrap(~ Family_History) +  # Check across different age groups
   labs(title = "Heart Attack Occurrence by Smoking History and Alcohol_Consumption")
 ```
 

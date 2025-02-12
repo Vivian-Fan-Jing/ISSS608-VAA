@@ -3,7 +3,6 @@ title: "Hands-on_Ex04_03"
 author: "Vivian Fan Jing"
 execute:
   warning: false
-  freeze: true
 ---
 
 # Funnel Plots for Fair Comparisons
@@ -141,8 +140,8 @@ In the code chunk below, ggplot2 functions are used to plot a static funnel plot
 ```{r}
 p <- ggplot(df, aes(x = Positive, y = rate)) +
   geom_point(aes(label= 'Sub-district'),
-             alpha = 0.4) +3
-  geom_line(data = dfCI, 
+             alpha = 0.4) +
+  geom_line(data = dfCI,
             aes(x = number.seq, 
                 y = number.ll95), 
             linewidth = 0.4, 
