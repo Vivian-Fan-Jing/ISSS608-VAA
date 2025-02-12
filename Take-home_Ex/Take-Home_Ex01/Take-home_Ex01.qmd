@@ -206,3 +206,5 @@ ggplot(heart_data, aes(x = Alcohol_Consumption, fill = Heart_Attack_Occurrence))
 
 Observation: Combining Smoking History and Alcohol Consumption doesn't reveal a clear relationship with Heart Attack Occurrence.
 
+
+

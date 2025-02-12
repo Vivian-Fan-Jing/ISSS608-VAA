@@ -140,8 +140,8 @@ In the code chunk below, ggplot2 functions are used to plot a static funnel plot
 
 ```{r}
 p <- ggplot(df, aes(x = Positive, y = rate)) +
-  geom_point(alpha = 0.4) +
-  geom_text(aes(label = `Sub-district`), vjust = -0.5) +
+  geom_point(aes(label= 'Sub-district'),
+             alpha = 0.4) +
   geom_line(data = dfCI, 
             aes(x = number.seq, 
                 y = number.ll95), 
