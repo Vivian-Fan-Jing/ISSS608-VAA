@@ -1,6 +1,8 @@
 ---
 title: "Hands-on Exercise 3"
 author: "Vivian Fan Jing"
+Excute:
+  Warning: False
 ---
 
 # 3.1 Learning Outcome

@@ -116,7 +116,3 @@ ggbarstats(exam1,
            x = MATHS_bins, 
            y = GENDER)
 ```
-
-
-
-

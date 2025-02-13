@@ -62,10 +62,9 @@ ggplot(heart_data, aes(x = Gender, fill = Heart_Attack_Occurrence)) +
   labs(title = "Heart Attack Occurrence by Gender and Region")
 ```
 
-
 ## 2.2 Reviewing the dataset to understand Health Metrics Variables
 
-Health metrics are key indicators that can help identify an individual's heart attack, including Cholesterol_level,Stress_levels, BMI, Heart_Rate, Systolic_BP, Diastolic_BP. These metrics are measurable factors related to a person's overall health and lifestyle. When certain health metrics are not in an ideal range, they can contribute to the development of heart disease, which in turn increases the risk of a heart attack. 
+Health metrics are key indicators that can help identify an individual's heart attack, including Cholesterol_level,Stress_levels, BMI, Heart_Rate, Systolic_BP, Diastolic_BP. These metrics are measurable factors related to a person's overall health and lifestyle. When certain health metrics are not in an ideal range, they can contribute to the development of heart disease, which in turn increases the risk of a heart attack.
 
 ### 2.2.1 Measure Cholesterol_level variable
 
@@ -76,7 +75,7 @@ ggplot(heart_data, aes(x = Age, y = Cholesterol_Level)) +
   xlab("Age") + ylab("Cholesterol_Level")
 ```
 
-Discover the distribution of Heart_Attack_Occurrence == "Yes" based on Cholesterol Level. I use the dplyr package in R to group the data and the ggplot2 package to draw a histogram. 
+Discover the distribution of Heart_Attack_Occurrence == "Yes" based on Cholesterol Level. I use the dplyr package in R to group the data and the ggplot2 package to draw a histogram.
 
 ```{r}
 library(dplyr)
@@ -116,9 +115,7 @@ ggplot(heart_attack_yes,
   theme_classic()
 ```
 
-
-To analyze Cholesterol_Level by age among individuals who had a heart attack, I look at the relationship between age and cholesterol level for people in the heart attack group.
-Code chunk below shows an advanced way to customize tooltip. A function is used to compute 90% confident interval of the mean. The derived statistics are then displayed in the tooltip.
+To analyze Cholesterol_Level by age among individuals who had a heart attack, I look at the relationship between age and cholesterol level for people in the heart attack group. Code chunk below shows an advanced way to customize tooltip. A function is used to compute 90% confident interval of the mean. The derived statistics are then displayed in the tooltip.
 
 ```{r}
 tooltip <- function(y, ymax, accuracy = .01) {
@@ -147,12 +144,9 @@ girafe(ggobj = gg_point,
        height_svg = 8*0.618)
 ```
 
-
-
 ### 2.2.2 Measure stress level variable
 
 Creating an interactive scatter plot: plot_ly() method to measure stress_level and Heart_Rate together in relation to heart attack occurrence and see how they relate or distribute together.
-
 
 ```{r}
 plot_ly(
@@ -162,11 +156,9 @@ plot_ly(
   color = ~Heart_Attack_Occurrence)
 ```
 
-
-
 ### 2.2.3 Measure Heart_Rate variable
 
-Creating a scatter plot with a marginal distribution (boxplot) to visualize the relationship between Heart Rate and Cholesterol Level and calculate the median of Heart Rate and Cholesterol Level for all observations. 
+Creating a scatter plot with a marginal distribution (boxplot) to visualize the relationship between Heart Rate and Cholesterol Level and calculate the median of Heart Rate and Cholesterol Level for all observations.
 
 ```{r}
 p1 <- ggplot(data=heart_data, 
@@ -234,7 +226,6 @@ ggplot(heart_data, aes(x = Smoking_History, fill = Heart_Attack_Occurrence)) +
 
 Observation: Based on the bar chart, proportion of Heart_Attack_Occurrence for smokers and non-smokers is almost the same. It suggests that smoking may not have a clear or strong direct association with heart attack occurrence in the dataset
 
-
 ### 2.3.2 Measure Smoking_History and Alcohol_Consumption variable
 
 ```{r}
@@ -245,7 +236,6 @@ ggplot(heart_data, aes(x = Hypertension_History, fill = Heart_Attack_Occurrence)
 ```
 
 Observation: Combining Smoking History and Alcohol Consumption doesn't reveal a clear relationship with Heart Attack Occurrence.
-
 
 ### 2.3.3 Measure BMI variable
 
@@ -272,18 +262,3 @@ ggplot(heart_attack_yes,
 
 ### 2.3.3 Measure Hypertension_History variable
 
-```{r}
-ggplot(heart_attack_yes, 
-       aes(x = Cholesterol_Level, 
-           y = Stress_Levels)) +
-  stat_halfeye(adjust = 0.5,
-               justification = -0.2,
-               .width = 0,
-               point_colour = NA) +
-  geom_boxplot(width = .20,
-               outlier.shape = NA) +
-  stat_dots(side = "left", 
-            justification = 1.2, 
-            binwidth = .5,
-            dotsize = 2)
-```

@@ -18,9 +18,7 @@ The hands-on exercise consists of four steps:
 
 -   Build an interactive ternary plot using *plot-ly()* function of **Plotly R** package.
 
-
 ## 13.2 Installing and launching R packages
-
 
 ```{r}
 pacman::p_load(plotly, ggtern, tidyverse)
@@ -46,10 +44,7 @@ agpop_mutated <- pop_data %>%
   filter(TOTAL > 0)
 ```
 
-
-
 ## 13.4 Plotting Ternary Diagram with R
-
 
 ### 13.4.1 Plotting a static ternary diagram
 
@@ -65,7 +60,6 @@ ggtern(data=agpop_mutated, aes(x=YOUNG,y=ACTIVE, z=OLD)) +
   theme_rgbw()
 
 ```
-
 
 ### 13.4.2 Plotting an interative ternary diagram
 
@@ -109,5 +103,3 @@ plot_ly(
     ternary = ternaryAxes
   )
 ```
-
-

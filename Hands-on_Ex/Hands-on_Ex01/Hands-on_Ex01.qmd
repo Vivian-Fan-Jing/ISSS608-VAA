@@ -1,6 +1,8 @@
 ---
 title: "Hands-on Exercise 1"
 author: "Vivian Fan Jing"
+Excute:
+  Warning: False
 ---
 
 # 1.1 Learning Outcome
@@ -52,10 +54,7 @@ In the nutshell, Grammar of Graphics defines the rules of structuring mathematic
 
 There are two principles in Grammar of Graphics, they are:
 
-Graphics = distinct layers of grammatical elements
-Meaningful plots through aesthetic mapping
-A good grammar of graphics will allow us to gain insight into the composition of complicated graphics, and reveal unexpected connections between seemingly different graphics (Cox 1978). It also provides a strong foundation for understanding a diverse range of graphics. Furthermore, it may also help guide us on what a well-formed or correct graphic looks like, but there will still be many grammatically correct but nonsensical graphics.
-
+Graphics = distinct layers of grammatical elements Meaningful plots through aesthetic mapping A good grammar of graphics will allow us to gain insight into the composition of complicated graphics, and reveal unexpected connections between seemingly different graphics (Cox 1978). It also provides a strong foundation for understanding a diverse range of graphics. Furthermore, it may also help guide us on what a well-formed or correct graphic looks like, but there will still be many grammatically correct but nonsensical graphics.
 
 ## 1.4.1 A Layered Grammar of Graphics
 
@@ -63,8 +62,7 @@ ggplot2 is an implementation of Leland Wilkinson’s Grammar of Graphics. Figure
 
 # 1.5 Essential Grammatical Elements in ggplot2: data
 
-Let us call the ggplot() function using the code chunk on the right.
-ggplot(data=exam_data)
+Let us call the ggplot() function using the code chunk on the right. ggplot(data=exam_data)
 
 # 1.6 Essential Grammatical Elements in ggplot2: Aesthetic mappings
 
@@ -81,27 +79,17 @@ ggplot(data=exam_data,
 
 ggplot includes the x-axis and the axis’s label.
 
-
 # 1.7 Essential Grammatical Elements in ggplot2: geom
 
 Geometric objects are the actual marks we put on a plot. Examples include:
 
- geom_point for drawing individual points (e.g., a scatter plot)
- geom_line for drawing lines (e.g., for a line charts)
- geom_smooth for drawing smoothed lines (e.g., for simple trends or    approximations)
- geom_bar for drawing bars (e.g., for bar charts)
- geom_histogram for drawing binned values (e.g. a histogram)
- geom_polygon for drawing arbitrary shapes
- geom_map for drawing polygons in the shape of a map! (You can access  the data to use for these maps by using the map_data() function).
- A plot must have at least one geom; there is no upper limit. You can  add a geom to a plot using the + operator.
-
+geom_point for drawing individual points (e.g., a scatter plot) geom_line for drawing lines (e.g., for a line charts) geom_smooth for drawing smoothed lines (e.g., for simple trends or approximations) geom_bar for drawing bars (e.g., for bar charts) geom_histogram for drawing binned values (e.g. a histogram) geom_polygon for drawing arbitrary shapes geom_map for drawing polygons in the shape of a map! (You can access the data to use for these maps by using the map_data() function). A plot must have at least one geom; there is no upper limit. You can add a geom to a plot using the + operator.
 
 ## 1.7.1 Geometric Objects: geom_bar
 
 ```{r}
 ggplot(data = exam_data, aes(x = RACE)) + geom_bar()
 ```
-
 
 ## 1.7.2 Geometric Objects: geom_dotplot
 
@@ -126,7 +114,6 @@ ggplot(data=exam_data,
                      breaks = NULL)
 ```
 
-
 ## 1.7.3 Geometric Objects: geom_histogram()
 
 In the code chunk below, geom_histogram() is used to create a simple histogram by using values in MATHS field of exam_data.
@@ -136,13 +123,12 @@ ggplot(data=exam_data,
        aes(x = MATHS)) +
   geom_histogram()
 ```
+
 ## 1.7.4 Modifying a geometric object by changing geom()
 
 In the code chunk below,
 
- bins argument is used to change the number of bins to 20,
- fill argument is used to shade the histogram with light blue color,   and
- color argument is used to change the outline colour of the bars in    black
+bins argument is used to change the number of bins to 20, fill argument is used to shade the histogram with light blue color, and color argument is used to change the outline colour of the bars in black
 
 ```{r}
 ggplot(data=exam_data, 
@@ -156,7 +142,6 @@ ggplot(data=exam_data,
 ## 1.7.5 Modifying a geometric object by changing aes()
 
 The code chunk below changes the interior colour of the histogram (i.e. fill) by using sub-group of aesthetic().
-
 
 ```{r}
 ggplot(data=exam_data, 
@@ -181,6 +166,7 @@ ggplot(data=exam_data,
 ```
 
 The code chunk below plots two kernel density lines by using colour or fill arguments of aes()
+
 ```{r}
 ggplot(data=exam_data, 
        aes(x = MATHS, 
@@ -250,4 +236,3 @@ ggplot(data=exam_data,
   geom_point(position="jitter", 
              size = 0.5) 
 ```
-

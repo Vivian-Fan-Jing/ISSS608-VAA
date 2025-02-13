@@ -182,6 +182,7 @@ p <- ggplot(df, aes(x = Positive, y = rate)) +
         legend.key.height = unit(0.3, "cm"))
 p
 ```
+
 ```{r}
 fp_ggplotly <- ggplotly(p,
   tooltip = c("label", 

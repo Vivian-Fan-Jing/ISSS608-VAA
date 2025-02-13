@@ -24,7 +24,7 @@ For the purpose of this exercise, the following R packages will be used, they ar
 ```{r}
 pacman::p_load(plotly, crosstalk, DT, 
                ggdist, ggridges, colorspace,
-               gganimate, tidyverse)
+               gganimate, tidyverse,ggplot2)
 ```
 
 ## 11.2.2 Data import
@@ -208,7 +208,6 @@ Gentle advice: This function comes with many arguments, students are advised to 
 
 In the code chunk below, [`stat_gradientinterval()`](https://mjskay.github.io/ggdist/reference/stat_gradientinterval.html) of **ggdist** is used to build a visual for displaying distribution of maths scores by race.
 
-
 ```{r}
 exam_data %>%
   ggplot(aes(x = RACE, 
@@ -225,15 +224,9 @@ exam_data %>%
 # 11.5 Visualising Uncertainty with Hypothetical Outcome Plots (HOPs)
 
 Launch the application in R
+
 ```{r}
-devtools::install_github("wilkelab/ungeviz")
 library(ungeviz)
-```
-
-Visualising Uncertainty with Hypothetical Outcome Plots (HOPs)
-
-
-```{r}
 ggplot(data = exam_data, 
        (aes(x = factor(RACE), 
             y = MATHS))) +
