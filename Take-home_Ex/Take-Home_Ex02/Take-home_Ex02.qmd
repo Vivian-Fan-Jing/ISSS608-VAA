@@ -1,0 +1,597 @@
+---
+title: "Take-home_Ex02"
+author: "Vivian Fan Jing"
+date: "March 9, 2025"
+execute:
+  warning: false
+---
+
+# 1 Getting started
+
+## 1.1 Installing and loading the required libraries
+
+We load the following R packages using the pacman::p_load() function:
+
+```{r}
+pacman::p_load(dplyr,ggrepel,patchwork, ggdist, 
+              ggthemes,tidyverse,tidymodels,timetk, fable, parsnip, modeltime, ggplot2)
+```
+
+## 1.2 Importing data
+
+### 1.2.1 'Merchandise Trade by Region and Selected Market (Imports)', 'Merchandise Trade by Region and Selected Market (Domestic Exports)', and 'Merchandise Trade by Region and Selected Market (Re-Exports).'
+
+I have downloaded three datasets from the Department of Statistics Singapore: 'Merchandise Trade by Region and Selected Market (Imports)', 'Merchandise Trade by Region and Selected Market (Domestic Exports)', and 'Merchandise Trade by Region and Selected Market (Re-Exports).' I am only using the data from the 'Total All Markets' category to compile the data for visualization. I have also transformed the data from a horizontal layout to a vertical one to facilitate better comparison.
+
+```{r}
+Import <- read.csv("data/Merchandise_Imports.csv", header = TRUE, check.names = FALSE)
+# Filter the rows where the first column is "Data Series" or "Total All Markets"
+Import_f <- Import[Import[[1]] %in% c("Data Series", "Total All Markets"), ]
+# Transpose the data
+Import_t <- t(Import_f)
+# Convert back to a data frame
+Import_t <- as.data.frame(Import_t, stringsAsFactors = FALSE)
+# Set the first row as column names
+colnames(Import_t) <- trimws(Import_t[1, ])
+colnames(Import_t) <- gsub(" ", "", colnames(Import_t))
+# Remove the first row since it's now used as headers
+Import_t <- Import_t[-1, ]
+# Reset row indices
+rownames(Import_t) <- NULL
+
+
+Export <- read.csv("data/Merchandise_DomesticExports.csv", header = TRUE, check.names = FALSE)
+# Filter the rows where the first column is "Data Series" or "Total All Markets"
+Export_f <- Export[Export[[1]] %in% c("Data Series", "Total All Markets"), ]
+# Transpose the data
+Export_t <- t(Export_f)
+# Convert back to a data frame
+Export_t <- as.data.frame(Export_t, stringsAsFactors = FALSE)
+# Set the first row as column names
+colnames(Export_t) <- trimws(Export_t[1, ])
+colnames(Export_t) <- gsub(" ", "", colnames(Export_t))
+# Remove the first row since it's now used as headers
+Export_t <- Export_t[-1, ]
+# Reset row indices
+rownames(Export_t) <- NULL
+
+
+Re_Export <- read.csv("data/Merchandise_Re-Exports.csv", header = TRUE, check.names = FALSE)
+# Filter the rows where the first column is "Data Series" or "Total All Markets"
+Re_Export_f <- Re_Export[Re_Export[[1]] %in% c("Data Series", "Total All Markets"), ]
+# Transpose the data
+Re_Export_t <- t(Re_Export_f)
+# Convert back to a data frame
+Re_Export_t <- as.data.frame(Re_Export_t, stringsAsFactors = FALSE)
+# Set the first row as column names
+colnames(Re_Export_t) <- trimws(Re_Export_t[1, ])
+colnames(Re_Export_t) <- gsub(" ", "", colnames(Re_Export_t))
+# Remove the first row since it's now used as headers
+Re_Export_t <- Re_Export_t[-1, ]
+# Reset row indices
+rownames(Re_Export_t) <- NULL
+
+colnames(Import_t)[colnames(Import_t) == "TotalAllMarkets"] <- "TotalAllMarkets_I"
+colnames(Export_t)[colnames(Export_t) == "TotalAllMarkets"] <- "TotalAllMarkets_E"
+colnames(Re_Export_t)[colnames(Re_Export_t) == "TotalAllMarkets"] <- "TotalAllMarkets_R"
+```
+
+### 1.2.2 'Domestic Exports Of Major Non-Oil Products'
+
+I have downloaded another dataset from the Department of Statistics Singapore:'Domestic Exports Of Major Non-Oil Products'. I am only using the data of Total Electronic Products and Total Non-Electronic Products to compile the data for visualization. I have also transformed the data from a horizontal layout to a vertical one to facilitate better comparison.
+
+```{r}
+Domestic_Exports <- read.csv("data/Domestic_Exports_Non-Oil.csv", header = TRUE,check.names = FALSE)
+Domestic_Exports_f <- Domestic_Exports[Domestic_Exports[[1]] %in% c("Data Series", "Total Electronic Products", "Non-Electronic Products"), ]
+# Transpose the data
+Domestic_Exports_t<- t(Domestic_Exports_f)
+Domestic_Exports_t <- as.data.frame(Domestic_Exports_t, stringsAsFactors = FALSE)
+# Set the first row as column names
+colnames(Domestic_Exports_t) <- trimws(Domestic_Exports_t[1, ])
+colnames(Domestic_Exports_t) <- gsub(" ", "", colnames(Domestic_Exports_t))
+# Remove the first row since it's now used as headers
+Domestic_Exports_t <- Domestic_Exports_t[-1, ]
+# Reset row indices
+rownames(Domestic_Exports_t) <- NULL
+```
+
+Changing the column name for this file
+
+```{r}
+colnames(Domestic_Exports_t) <- gsub(" ", "", colnames(Domestic_Exports_t))
+colnames(Domestic_Exports_t)[colnames(Domestic_Exports_t) == "Non-ElectronicProducts"] <-  "TotalNonElectronicProducts"
+```
+
+### 1.2.3 'Merchandise Trade By Commodity Section, (At Current Prices), Monthly'
+
+I have downloaded the 5th dataset from the Department of Statistics Singapore:'Merchandise Trade By Commodity Section, (At Current Prices), Monthly'. I am only using the data of Total Merchandise Trade(Oil and Non-Oil) to compile the data for visualization. I have also transformed the data from a horizontal layout to a vertical one to facilitate better comparison.
+
+```{r}
+Merchandise_Commodity <- read.csv("data/Merchandise_CommoditySection.csv", header = TRUE,check.names = FALSE)
+Merchandise_Commodity_f <- Merchandise_Commodity[Merchandise_Commodity[[1]] %in% c("Data Series", "    Food & Live Animals", "    Beverages & Tobacco", "    Crude Materials (Excl Fuels)","    Animal & Vegetable Oils Fats & Waxes","    Chemicals & Chemical Products","    Manufactured Goods","    Machinery & Transport Equipment", "    Miscellaneous Manufactured Articles","    Miscellaneous (Excluding Oil Bunkers)"), ]
+
+# Transpose the data
+Merchandise_Commodity_t<- t(Merchandise_Commodity_f)
+Merchandise_Commodity_t <- as.data.frame(Merchandise_Commodity_t, stringsAsFactors = FALSE)
+# Set the first row as column names
+colnames(Merchandise_Commodity_t) <- trimws(Merchandise_Commodity_t[1, ])
+colnames(Merchandise_Commodity_t) <- gsub(" ", "", colnames(Merchandise_Commodity_t))
+colnames(Merchandise_Commodity_t) <- gsub("&", "", colnames(Merchandise_Commodity_t))
+# Remove the first row since it's now used as headers
+Merchandise_Commodity_t<- Merchandise_Commodity_t[-1, ]
+# Reset row indices
+rownames(Merchandise_Commodity_t) <- NULL
+
+```
+
+## 1.3 Data Pre-processing
+
+### 1.3.1 'Merchandise Trade by Region and Selected Market (Imports)', 'Merchandise Trade by Region and Selected Market (Domestic Exports)', and 'Merchandise Trade by Region and Selected Market (Re-Exports).'
+
+Using merge() to combine three files because all files have the same column names Reducing the size of the dataset to focus on the variables that would be suitable for this exercise.
+
+```{r}
+# Merge data frames
+tmp <- merge(Import_t, Export_t, by = "DataSeries")
+Merchandise <- merge(tmp, Re_Export_t, by = "DataSeries")
+Merchandise$TotalAllMarkets_I <- as.numeric(Merchandise$TotalAllMarkets_I)
+Merchandise$TotalAllMarkets_E <- as.numeric(Merchandise$TotalAllMarkets_E)
+Merchandise$TotalAllMarkets_R <- as.numeric(Merchandise$TotalAllMarkets_R)
+
+```
+
+Selecting total all market rows for import, domestic export, and re-export by year.
+
+```{r}
+year_list <- 2003:2024
+prefixes <- as.character(year_list)
+
+# Initialize result dataframe
+Merchandise_sums <- data.frame()
+
+for (prefix in prefixes) {
+  # Find rows
+  Merchandise_ <- Merchandise[grepl(paste0("^", prefix),  Merchandise$DataSeries), ]
+  # Compute the sum of the column
+  Merchandise_I <- colSums(Merchandise_[, c("TotalAllMarkets_I",
+                                            "TotalAllMarkets_E",
+                                            "TotalAllMarkets_R")])
+
+  # Create the new row
+  new_row <- data.frame(TotalAllMarkets_I = Merchandise_I["TotalAllMarkets_I"],
+                        TotalAllMarkets_E =  Merchandise_I["TotalAllMarkets_E"],
+                        TotalAllMarkets_R = Merchandise_I["TotalAllMarkets_R"],
+                        C = prefix)
+  Merchandise_sums <- rbind(Merchandise_sums, new_row)
+}
+
+```
+
+### 1.3.2 'Merchandise Trade By Commodity Section, (At Current Prices), Monthly'
+
+Selecting Total Electronic Products and Total Non-Electronic Products by year.
+
+```{r}
+Domestic_Exports_t$TotalElectronicProducts <- as.numeric(gsub(",", "", Domestic_Exports_t$TotalElectronicProducts))
+
+Domestic_Exports_t$TotalNonElectronicProducts <- as.numeric(gsub(",", "", Domestic_Exports_t$TotalNonElectronicProducts))
+
+year_list <- 2003:2024
+prefixes <- as.character(year_list)
+
+# Initialize result dataframe
+Domestic_Exports_sums <- data.frame()
+
+for (prefix in prefixes) {
+  # Find rows
+  Domestic_Exports_t_ <- Domestic_Exports_t[grepl(paste0("^", prefix),  Domestic_Exports_t$DataSeries), ]
+  # Compute the sum of the column
+  Domestic_Exports_t_I <- colSums(Domestic_Exports_t_[, c("TotalElectronicProducts", "TotalNonElectronicProducts")])
+
+  # Create the new row
+  new_row <- data.frame(TotalElectronicProducts = Domestic_Exports_t_I["TotalElectronicProducts"],
+                        TotalNonElectronicProducts = Domestic_Exports_t_I["TotalNonElectronicProducts"],
+                        C = prefix)
+  Domestic_Exports_sums <- rbind(Domestic_Exports_sums, new_row)
+}
+
+```
+
+### 1.3.3 'Merchandise Trade By Commodity Section, (At Current Prices), Monthly'
+
+```{r}
+
+Merchandise_Commodity_t <- Merchandise_Commodity_t[, 1:11]
+
+Merchandise_Commodity_t$FoodLiveAnimals <- as.numeric(gsub(",", "", Merchandise_Commodity_t$FoodLiveAnimals)) 
+Merchandise_Commodity_t$BeveragesTobacco <- as.numeric(gsub(",", "", Merchandise_Commodity_t$BeveragesTobacco)) 
+Merchandise_Commodity_t$"CrudeMaterials(ExclFuels)" <- as.numeric(gsub(",", "", Merchandise_Commodity_t$"CrudeMaterials(ExclFuels)")) 
+Merchandise_Commodity_t$AnimalVegetableOilsFatsWaxes <- as.numeric(gsub(",", "", Merchandise_Commodity_t$AnimalVegetableOilsFatsWaxes)) 
+Merchandise_Commodity_t$ChemicalsChemicalProducts <- as.numeric(gsub(",", "", Merchandise_Commodity_t$ChemicalsChemicalProducts)) 
+Merchandise_Commodity_t$ManufacturedGoods <- as.numeric(gsub(",", "", Merchandise_Commodity_t$ManufacturedGoods)) 
+Merchandise_Commodity_t$MachineryTransportEquipment <- as.numeric(gsub(",", "", Merchandise_Commodity_t$MachineryTransportEquipment)) 
+Merchandise_Commodity_t$MiscellaneousManufacturedArticles <- as.numeric(gsub(",", "", Merchandise_Commodity_t$MiscellaneousManufacturedArticles))
+Merchandise_Commodity_t$"Miscellaneous(ExcludingOilBunkers)" <- as.numeric(gsub(",", "", Merchandise_Commodity_t$"Miscellaneous(ExcludingOilBunkers)"))
+
+year_list <- 2003:2024
+prefixes <- as.character(year_list)
+
+# Initialize result dataframe
+Merchandise_Commodity_sums <- data.frame()
+
+for (prefix in prefixes) {
+  # Find rows
+  Merchandise_Commodity_t_ <- Merchandise_Commodity_t[grepl(paste0("^", prefix),  Merchandise_Commodity_t$DataSeries), ]
+  # Compute the sum of the column
+  Merchandise_Commodity_t_I <- colSums(Merchandise_Commodity_t_[, c("FoodLiveAnimals", "BeveragesTobacco","CrudeMaterials(ExclFuels)","AnimalVegetableOilsFatsWaxes","ChemicalsChemicalProducts","ManufacturedGoods","MachineryTransportEquipment","MiscellaneousManufacturedArticles","Miscellaneous(ExcludingOilBunkers)")])
+
+  # Create the new row
+  new_row <- data.frame(TotalFoodLiveAnimals = Merchandise_Commodity_t_I["FoodLiveAnimals"],
+                        TotalBeveragesTobacco = Merchandise_Commodity_t_I["BeveragesTobacco"],
+                        "TotalCrudeMaterials(ExclFuels)" = Merchandise_Commodity_t_I["CrudeMaterials(ExclFuels)"],
+                        TotalAnimalVegetableOilsFatsWaxes = Merchandise_Commodity_t_I["AnimalVegetableOilsFatsWaxes"],
+                        TotalChemicalsChemicalProducts = Merchandise_Commodity_t_I["ChemicalsChemicalProducts"],
+                        TotalManufacturedGoods = Merchandise_Commodity_t_I["ManufacturedGoods"],
+                        TotalMachineryTransportEquipment = Merchandise_Commodity_t_I["MachineryTransportEquipment"],
+                        TotalMiscellaneousManufacturedArticles = Merchandise_Commodity_t_I["MiscellaneousManufacturedArticles"],
+                        "TotalMiscellaneous(ExcludingOilBunkers)" = Merchandise_Commodity_t_I["Miscellaneous(ExcludingOilBunkers)"],
+                        C = prefix)
+  Merchandise_Commodity_sums <- rbind(Merchandise_Commodity_sums, new_row)
+}
+
+```
+
+# 2. EDA
+
+## 2.1 Stacked bar chart: Distribution of import, export, and re-export amount across different year
+
+Visualizing the import, export, and re-export amounts from 2003 to 2024. Stacked bar chart is more useful to analyze the category breakdown for different trade categories contribute to total trade amounts per year. This Stacked bar chart helps us understand composition of trade (imports, exports, re-exports) per year.
+
+```{r}
+Merchandise_sums_1 <- Merchandise_sums %>%
+  pivot_longer(cols = c(TotalAllMarkets_I, TotalAllMarkets_E, TotalAllMarkets_R),
+               names_to = "TradeType",
+               values_to = "Amount")
+# Plot the data
+p1<- ggplot(Merchandise_sums_1, aes(x = C, y = Amount / 1e3, fill = TradeType)) +
+  geom_bar(stat = "identity", position = "stack") + 
+  scale_y_continuous(labels = scales::comma_format(suffix = "B")) +
+  labs(
+    title = "Import, Export, and Re-export amounts from 2003 to 2024",
+     x = "Year", 
+     y = "Import, Export, and Re-export Amounts"  
+  ) +
+  theme(plot.title = element_text(face = "bold", size = 10),
+        plot.subtitle = element_text(size = 10),
+        legend.position = "bottom",
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        axis.text.x = element_text(hjust = 0.5,size = 5),
+        axis.text.y = element_text(size = 5),
+        axis.title.x=element_text(size=10,face="bold"),
+        axis.title.y=element_text(size=10,face="bold"))
+
+print(p1)
+```
+
+## 2.2 Boxplot of import, export, and re-export amount
+
+Analyzing trade variability and outliers across years from 2003 to 2024 by using boxplot. We can observe the trade distribution, medians, and outliers and identify extreme values and yearly fluctuations.
+
+```{r}
+p2 <- ggplot(Merchandise_sums_1, aes(x = TradeType, y = Amount / 1e3)) +
+  geom_boxplot() +
+  scale_y_continuous(labels = scales::comma_format(suffix = "B")) +
+  labs(
+    title = "Trade Amount Distribution by Year (2003-2024)",
+    x = "Trade Type",
+    y = "Amount"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", size = 10),
+    axis.text.x = element_text(vjust = 0.5, size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold")
+  )
+
+print(p2)
+```
+
+## 2.3 BarChart of Export trade amount
+
+Comparing trade amounts year by year, a bar chart is a good choice.
+
+```{r}
+Merchandise_sums %>%
+  ggplot(aes(x = C, y = TotalAllMarkets_E / 1e3, fill = as.factor(C))) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.5) +  
+  scale_y_continuous(labels = scales::comma_format(suffix = "B")) +
+  labs(title = 'Total Export Trade Amount by Year', 
+       x = 'Year', 
+       y = 'Export Trade Amount') +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 8))
+```
+
+## 2.4 BarChart of Re-export trade amount
+
+```{r}
+Merchandise_sums %>%
+  ggplot(aes(x = C, y = TotalAllMarkets_R / 1e3, fill = as.factor(C))) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.5) +  
+  scale_y_continuous(labels = scales::comma_format(suffix = "B")) +
+  labs(title = 'Total Re-Export Trade Amount by Year', 
+       x = 'Year', 
+       y = 'Re-Export Trade Amount') +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 8))
+```
+
+## 2.5 BarChart of Import trade amount
+
+```{r}
+Merchandise_sums %>%
+  ggplot(aes(x = C, y = TotalAllMarkets_I / 1e3, fill = as.factor(C))) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.5) +  
+  scale_y_continuous(labels = scales::comma_format(suffix = "B")) +
+  labs(title = 'Total Re-Export Trade Amount by Year', 
+       x = 'Year', 
+       y = 'Re-Export Trade Amount') +
+  theme_classic() + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 8))
+```
+
+# 3. EDA
+
+## 3.1 LineChart of Total Non-Oil Domestic Export for Electronic Products by Year
+
+Analyzing trends and patterns for Electronic Products export amount over the years.
+
+```{r}
+Domestic_Exports_sums %>%
+  ggplot(aes(C, TotalElectronicProducts / 1e6)) +
+  geom_point()+
+  geom_line(group = 1, color = "grey") +
+  geom_smooth(method = "lm", se = TRUE, na.rm = TRUE) +
+  theme_classic()+
+  scale_y_continuous(labels = scales::comma_format(suffix = "B")) +
+  labs(title = 'Total Domestic Export for Electronic Products by Year', 
+       x = 'Year', 
+       y = 'Total Electronic Products') 
+```
+
+## 3.2 LineChart of Total Non-Oil Domestic Export for Non-Electronic Products by Year
+
+Analyzing trends and patterns for Non-Electronic Products export amount over the years.
+
+```{r}
+Domestic_Exports_sums %>%
+  ggplot(aes(C, TotalNonElectronicProducts / 1e6)) +
+  geom_point()+
+  geom_line(group = 1, color = "grey") +
+  geom_smooth(method = "lm", se = TRUE, na.rm = TRUE) +
+  theme_classic()+
+  scale_y_continuous(labels = scales::comma_format(suffix = "B")) +
+  labs(title = 'Total Domestic Export for Non-Electronic Products by Year', 
+       x = 'Year', 
+       y = 'Total Non-Electronic Products (Billion)') 
+```
+
+
+# 4. EDA
+
+## 4.1 Stacked bar chart: Total Merchandise Trade for Non-Oil Commodity
+
+Showing the total Oil and Non-Oil commodity trade amounts over time. Arranged categories by value (arrange(desc(Value))) for better readability.
+
+```{r}
+data <- data.frame(
+  Category = c("TotalFoodLiveAnimals", "TotalBeveragesTobacco", "TotalCrudeMaterials(ExclFuels)", 
+               "TotalAnimalVegetableOilsFatsWaxes", "TotalChemicalsChemicalProducts", 
+               "TotalManufacturedGoods", "TotalMachineryTransportEquipment", 
+               "TotalMiscellaneousManufacturedArticles", "TotalMiscellaneous(ExcludingOilBunkers)"),
+  Value = c(27649676, 9479738, 7188128, 3370374, 112283179, 44953187, 685295526, 
+            105277268, 56724860)
+)
+
+data$Percent <- round(data$Value / sum(data$Value) * 100, 0)
+
+data <- data %>%
+  mutate(y_pos = cumsum(Value) - (Value / 2))
+
+ggplot(data, aes(x = "", y = Value, fill = Category)) +
+  geom_bar(stat = "identity", width = 1,, color = "white") + 
+  coord_polar(theta = "y") + 
+  geom_text_repel(aes(y = y_pos, label = paste0(Percent, "%")), 
+                  nudge_x = 1,  # Push text outward
+                  size = 5, 
+                  color = "black", 
+                  segment.color = "gray") +
+  scale_fill_brewer(palette = "Set3") +
+  theme_void() +  # Removes axis and grid
+  labs(title = "Total Merchandise Trade for Non-Oil Commodity") +
+  theme(legend.position = "right")
+```
+
+# 5. Analysing and Forecasting Time-series Data: tidyverts methods
+
+The main data set used is Import_t. This file consists of two columns. They are:
+
+-   Year Month (from 2003 Jan to 2025 Jan)
+
+-   trade amount
+
+## 5.1 Data Import and Sampling
+
+Transforming DataSeries to date format and Amount to numeric format.
+
+```{r}
+Import_t$TotalAllMarkets_I <- as.numeric(Import_t$TotalAllMarkets_I)
+Import_t$DataSeries <- as.Date(paste0(Import_t$DataSeries, " 01"), format = "%Y %b %d")
+```
+
+We will split the data set into training and hold-out data sets by using initial_time_split() of rsample package, a member of the tidymodels family.
+
+```{r}
+Import_t_group <- Import_t %>%
+  group_by(DataSeries) %>%
+  ungroup()
+Import_t_splits <- Import_t_group %>%
+  initial_time_split(prop = 0.955)
+```
+
+For checking purposes, the code chunk below can be used save the split sample data sets into training and holdout tibble data tables respectively.
+
+```{r}
+Import_t_training <- training(Import_t_splits)
+Import_t_holdout <- testing(Import_t_splits)
+```
+
+## 5.2 Create & Fit Multiple Models
+
+Build and fiting four models using the code chunks below:
+
+**Model 1: Exponential Smoothing (Modeltime)**
+
+An Error-Trend-Season (ETS) model by using `exp_smoothing()`.
+
+```{r}
+model_fit_ets <- modeltime::exp_smoothing() %>%
+    set_engine(engine = "ets") %>%
+    fit(TotalAllMarkets_I ~ DataSeries, 
+        data = Import_t_training)
+
+```
+
+**Model 2: Auto ARIMA (Modeltime)**
+
+An auto ARIMA model by using `arima_reg()`.
+
+```{r}
+model_fit_arima <- arima_reg() %>%
+  set_engine(engine = "auto_arima") %>%
+  fit(TotalAllMarkets_I ~ DataSeries, 
+      data = Import_t_training)
+```
+
+**Model 3: Boosted Auto ARIMA (Modeltime)**
+
+An Boosted auto ARIMA model by using `arima_boost()`.
+
+```{r}
+model_fit_arima_boosted <- arima_boost(
+  min_n = 2,
+  learn_rate = 0.015) %>%
+  set_engine(
+    engine = "auto_arima_xgboost") %>%
+  fit(TotalAllMarkets_I ~ DataSeries, 
+      data = Import_t_training)
+```
+
+**Model 4: prophet (Modeltime)**
+
+A prophet model using `prophet_reg().`
+
+```{r}
+model_fit_prophet <- prophet_reg() %>%
+  set_engine(engine = "prophet") %>%
+  fit(TotalAllMarkets_I ~ DataSeries, 
+      data = Import_t_training)
+
+```
+
+## 5.3 **Add fitted models to a Model Table**
+
+modeltime_table() of modeltime package is used to add each of the models to a Modeltime Table.
+
+```{r}
+models_tbl <- modeltime_table(
+  model_fit_ets,
+  model_fit_arima,
+  model_fit_arima_boosted,
+  model_fit_prophet)
+
+models_tbl
+```
+
+## 5.4 **Calibrate the model to a testing set**
+
+In the code chunk below, [`modeltime_caibrate()`](https://business-science.github.io/modeltime/reference/modeltime_calibrate.html) is used to add a new column called *.calibrate_data* into the newly *created models_tbl* tibble data table.
+
+```{r}
+calibration_tbl <- models_tbl %>%
+    modeltime_calibrate(new_data = Import_t_holdout)
+
+calibration_tbl
+```
+
+Note that Calibration Data is simply forecasting predictions and residuals that are calculated from the hold-out data (also know as test data in machine learning)
+
+## 5.5 **Model Accuracy Assessment**
+
+In the code chunk below, [`modeltime_accuracy()`](https://business-science.github.io/modeltime/reference/modeltime_accuracy.html) of modeltime package is used compute the accuracy metrics. Then, [`table_modeltime_accuracy()`](https://business-science.github.io/modeltime/reference/table_modeltime_accuracy.html) is used to present the accuracy metrics in tabular form.
+
+```{r}
+calibration_tbl %>%
+  modeltime_accuracy %>%
+  table_modeltime_accuracy(
+    .interactive = FALSE)
+```
+
+Visualizing the Test Error is easy to do using the interactive plotly visualization (just toggle the visibility of the models using the Legend).
+
+```{r}
+calibration_tbl %>%
+  modeltime_forecast(
+    new_data = Import_t_holdout,
+    actual_data = Import_t) %>%
+  plot_modeltime_forecast(
+    .legend_max_width = 25, 
+    .interactive = TRUE,
+    .plotly_slider = TRUE)
+```
+
+## 5.6 **Refit to Full Dataset & Forecast Forward**
+
+The final step is to refit the models to the full dataset using [`modeltime_refit()`](https://business-science.github.io/modeltime/reference/modeltime_refit.html) and forecast them forward.
+
+The code chunk below uses modeltime_refit() to refit the forecasting models with the full data.
+
+```{r}
+refit_tbl <- calibration_tbl %>%
+    modeltime_refit(data = Import_t)
+
+```
+
+Then, modeltime_forecast() is used to forecast to a selected future time period, in this example 12 months.
+
+```{r}
+forecast_tbl <- refit_tbl %>%
+  modeltime_forecast(
+    h = "12 months",
+    actual_data = Import_t,
+    keep_data = TRUE) 
+```
+
+Notice that this newly derived forecast_tbl consists 12 months x 4 models
+
+
+```{r}
+forecast_tbl %>%
+  plot_modeltime_forecast(
+    .legend_max_width = 25, 
+    .interactive = TRUE,
+    .plotly_slider = TRUE)
+```
+
+Lastly, examing the model accuracy metrics after refitting the full data set.
+
+```{r}
+refit_tbl %>%
+  modeltime_accuracy() %>%
+  table_modeltime_accuracy(
+    .interactive = FALSE)
+```
+
+
