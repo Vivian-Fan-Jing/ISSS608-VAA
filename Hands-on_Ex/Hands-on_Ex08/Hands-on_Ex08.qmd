@@ -111,8 +111,6 @@ mpsz_pop2020 <- left_join(mpsz, popdata2020,
                           by = c("SUBZONE_N" = "SZ"))
 ```
 
-```{r}
-write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
-```
+
 
 
