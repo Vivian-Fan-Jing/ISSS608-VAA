@@ -1,8 +1,10 @@
 ---
 title: "Hands-on Exercise 2"
 author: "Vivian Fan Jing"
-Excute:
-  Warning: False
+execute: 
+  eval: true
+  echo: true
+  warning: false
   freeze: true
 ---
 

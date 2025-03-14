@@ -2,8 +2,11 @@
 title: "Take-home_Ex01"
 author: "Vivian Fan Jing"
 date: "February 16, 2025"
-execute:
+execute: 
+  eval: true
+  echo: true
   warning: false
+  freeze: true
 ---
 
 # 1 Getting started
@@ -250,21 +253,10 @@ ggbetweenstats(
 
 Observation: heart rates for people with hypertension are very close to those in the heart attack group, it suggests that hypertension may be a key contributor to heart attacks.
 
-
 # 3 Summary and conclusion
 
-In this exercise, I performed visualization of the data to examine the relationship between heart attack occurrence and various variables in dataset. 
+In this exercise, I performed visualization of the data to examine the relationship between heart attack occurrence and various variables in dataset.
 
 I proceed univariate Visualizations, bivariate Visualization, and multivariate Visualizations to uncover how various factors like Cholesterol Level, Heart Rate, Age, and Blood Pressure relate to Heart Attack Occurrence.
 
 However, dataset doesn’t have sufficient variability or has a lot of similar values in key variables, I might not see meaningful relationships. Everyone in the dataset has similar cholesterol levels or heart rates, there might not be much variance to detect significant patterns.
-
-
-
-
-
-
-
-
-
-
