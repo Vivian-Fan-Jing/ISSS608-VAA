@@ -2,8 +2,11 @@
 title: "Take-home_Ex02"
 author: "Vivian Fan Jing"
 date: "March 9, 2025"
-execute:
+execute: 
+  eval: true
+  echo: true
   warning: false
+  freeze: true
 ---
 
 # 1 Getting started

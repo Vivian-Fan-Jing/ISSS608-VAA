@@ -1,6 +1,11 @@
 ---
 title: "Hands-on_Ex04_02"
 author: "Vivian Fan Jing"
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
 ---
 
 # Visualising Uncertainty

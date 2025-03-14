@@ -4,6 +4,7 @@ author: "Vivian Fan Jing"
 date: "February 12, 2025"
 execute:
   warning: false
+  freeze: true
 ---
 
 # 16 Treemap Visualisation with R
