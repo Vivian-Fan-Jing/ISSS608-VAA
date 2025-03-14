@@ -2,7 +2,9 @@
 title: "Hands-on_Ex05_03"
 author: "Vivian Fan Jing"
 date: "February 12, 2025"
-execute:
+execute: 
+  eval: true
+  echo: true
   warning: false
   freeze: true
 ---
