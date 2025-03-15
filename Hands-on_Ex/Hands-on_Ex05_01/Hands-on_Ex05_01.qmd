@@ -2,8 +2,11 @@
 title: "Hands-on_Ex05_01"
 author: "Vivian Fan Jing"
 date: "February 12, 2025"
-execute:
+execute: 
+  eval: true
+  echo: true
   warning: false
+  freeze: true
 ---
 
 # 6 Visual Correlation Analysis
@@ -53,8 +56,6 @@ pairs(wine[,2:12], lower.panel = NULL)
 ### 6.4.3 Including with correlation coefficients
 
 To show the correlation coefficient of each pair of variables instead of a scatter plot, panel.cor function will be used. This will also show higher correlations in a larger font.
-
-
 
 6.5 Visualising Correlation Matrix: ggcormat()
 

@@ -2,8 +2,11 @@
 title: "Hands-on_Ex07"
 author: "Vivian Fan Jing"
 date: "February 26, 2025"
-execute:
+execute: 
+  eval: true
+  echo: true
   warning: false
+  freeze: true
 ---
 
 # 17 Visualising and Analysing Time-oriented Data
@@ -164,7 +167,6 @@ attacks_by_country <- count(
   arrange(desc(n))
 ```
 
-
 Step 2: Preparing the tidy data frame
 
 Extracting the attack records of the top 4 countries from attacks data frame and saving the data in a new tibble data frame (i.e. top4_attacks).
@@ -179,7 +181,6 @@ top4_attacks <- attacks %>%
     source_country, levels = top4)) %>%
   na.omit()
 ```
-
 
 Step 3: Plotting the Multiple Calender Heatmap by using ggplot2 package
 
@@ -265,7 +266,6 @@ ggplot() +
   theme_tufte(base_family = "Helvetica")
 ```
 
-
 ## 17.5 Plotting Slopegraph
 
 Step 1: Data Import
@@ -285,5 +285,3 @@ rice %>%
                 SubTitle = "1961-1980",
                 Caption = "Prepared by: Vivian Fan Jing")
 ```
-
-
