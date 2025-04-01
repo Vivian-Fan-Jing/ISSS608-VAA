@@ -24,7 +24,7 @@ pacman::p_load(tidyverse,readxl,ggcorrplot, ggstatsplot, GGally,
 In the code chunk below, read_csv() of readr is used to import WDI Country Data.csv into R and parsed it into tibble R data.frame format.
 
 ```{r}
-water_indicators <- read.csv("WDI Country Data.csv")
+water_indicators <- read_csv("WDI Country Data.csv")
 ```
 
 ## 2.2 Data summary
@@ -107,6 +107,7 @@ The code chunk below designed a treemap by using three core arguments of treemap
 water_long_selected_reshape_1 <- water_long_selected_reshape %>%
   drop_na("Level of water stress: freshwater withdrawal as a proportion of available freshwater resources")
 ```
+
 
 ```{r}
 tm1 <- treemap(water_long_selected_reshape_1,

@@ -1,0 +1,1288 @@
+---
+title: "Take-home_Ex03_03"
+author: "Vivian Fan Jing"
+format: html
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+editor: visual
+---
+
+# 1. Installing and Launching R Packages
+
+```{r}
+pacman::p_load(SmartEDA, tidyverse, ggstatsplot,dplyr)
+```
+
+# 2 Data Wrangling
+
+## 2.1 Importing the data set
+
+In the code chunk below, read_csv() of readr is used to import WDI Country Data.csv into R and parsed it into tibble R data.frame format.
+
+```{r}
+water_indicators <- read.csv("WDI Country Data.csv")
+```
+
+## 2.2 Data summary
+
+Function ExpData() comes from the SmartEDA package in R and The type = 2 argument specifies the type of analysis to perform.
+
+```{r}
+water_indicators %>%
+  ExpData(type = 2)
+```
+
+## 2.3 Data Cleaning
+
+```{r}
+water_indicators[water_indicators == ".."] <- NA
+water_indicators[water_indicators == "#N/A"] <- NA
+water_indicators[water_indicators == ""] <- NA
+
+```
+
+```{r}
+colnames(water_indicators) <- gsub("^X", "", colnames(water_indicators))
+water_indicators_long <- water_indicators %>%
+  pivot_longer(cols = starts_with("20"),  # Select columns starting with "20" (years)
+               names_to = "year",         # New column for years
+               values_to = "value")       # New column for values
+```
+
+Grouping  the years into categories and creating a new categorical column (year_group)
+
+```{r}
+water_indicators_long1 <- water_indicators_long %>%
+  mutate(year = as.numeric(year)) %>%
+  mutate(year_group = case_when(
+    year >= 2000 & year <= 2005 ~ "2000-2005",
+    year >= 2006 & year <= 2010 ~ "2006-2010",
+    year >= 2011 & year <= 2015 ~ "2011-2015",
+    year >= 2016 & year <= 2021 ~ "2016-2021",
+    TRUE ~ NA_character_  # Handle unexpected years
+  ))
+```
+
+# 3. Oneway ANOVA Test: ggbetweenstats() method over past Twenty years
+
+ANOVA (Analysis of Variance) tests if the mean values of different groups are significantly different as we need statistical proof of differences, determining whether observed differences are statistically significant.
+
+## 3.1 People using at least basic sanitation services (% of population) 
+
+### 3.1.1 African Region
+
+```{r}
+water_long_selected1 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic sanitation services (% of population)',
+         Region == 'African Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected1,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Sanitation Services for African Region by Year Group"
+)
+```
+
+### 3.1.2 Region of the Americas
+
+```{r}
+water_long_selected2 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic sanitation services (% of population)',
+         Region == 'Region of the Americas')
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected2,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Sanitation Services for Region of the Americas by Year Group"
+)
+```
+
+
+### 3.1.3 European Region
+
+```{r}
+water_long_selected3 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic sanitation services (% of population)',
+         Region == 'European Region')
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected3,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Sanitation Services for European Region by Year Group"
+)
+```
+
+
+### 3.1.4 Eastern Mediterranean Region
+
+```{r}
+water_long_selected4 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic sanitation services (% of population)',
+         Region == 'Eastern Mediterranean Region')
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected4,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Sanitation Services for Eastern Mediterranean Region by Year Group"
+)
+```
+
+
+### 3.1.5 South-East Asia Region
+
+
+```{r}
+water_long_selected5 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic sanitation services (% of population)',
+         Region == 'South-East Asia Region')
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected5,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Sanitation Services for South-East Asia Region by Year Group"
+)
+```
+
+
+### 3.1.6 Western Pacific Region
+
+
+```{r}
+water_long_selected6 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic sanitation services (% of population)',
+         Region == 'Western Pacific Region')
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected6,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Sanitation Services for Western Pacific Region by Year Group"
+)
+```
+
+## 3.2 People using safely managed sanitation services (% of population)
+
+### 3.2.1 African Region
+
+```{r}
+water_long_selected7 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed sanitation services (% of population)',
+         Region == 'African Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected7,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Safely Managed Sanitation Services for African Region by Year Group")
+```
+
+### 3.2.2 Region of the Americas
+
+
+```{r}
+water_long_selected8 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed sanitation services (% of population)',
+         Region == 'Region of the Americas')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected8,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Safely Managed Sanitation Services for Region of the Americas"
+)
+```
+
+
+
+### 3.2.3 European Region
+
+```{r}
+water_long_selected9 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed sanitation services (% of population)',
+         Region == 'European Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected9,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Safely Managed Sanitation Services for European Region"
+)
+```
+
+
+
+### 3.2.4 Eastern Mediterranean Region
+
+```{r}
+water_long_selected10 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed sanitation services (% of population)',
+         Region == 'Eastern Mediterranean Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected10,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Safely Managed Sanitation Services for Eastern Mediterranean Region"
+)
+```
+
+
+### 3.2.5 South-East Asia Region
+
+
+```{r}
+water_long_selected11 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed sanitation services (% of population)',
+         Region == 'South-East Asia Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected11,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Safely Managed Sanitation Services for South-East Asia Region"
+)
+```
+
+### 3.2.6 Western Pacific Region
+
+
+```{r}
+water_long_selected12 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed sanitation services (% of population)',
+         Region == 'Western Pacific Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected12,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Safely Managed Sanitation Services for Western Pacific Region"
+)
+```
+
+## 3.3 People using at least basic drinking water services (% of population)
+
+### 3.3.1 African Region
+
+```{r}
+water_long_selected13 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic drinking water services (% of population)',
+         Region == 'African Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected13,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for African Region by Year Group"
+)
+```
+
+
+### 3.3.2 Region of the Americas
+
+
+```{r}
+water_long_selected14 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic drinking water services (% of population)',
+         Region == 'Region of the Americas')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected14,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for Region of the Americas"
+)
+```
+
+
+
+### 3.3.3 European Region
+
+```{r}
+water_long_selected15 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic drinking water services (% of population)',
+         Region == 'European Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected15,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for European Region"
+)
+```
+
+
+### 3.3.4 Eastern Mediterranean Region
+
+
+```{r}
+water_long_selected16 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic drinking water services (% of population)',
+         Region == 'Eastern Mediterranean Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected16,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for Eastern Mediterranean Region"
+)
+```
+
+
+
+### 3.3.5 South-East Asia Region
+
+
+```{r}
+water_long_selected17 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic drinking water services (% of population)',
+         Region == 'South-East Asia Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected17,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for South-East Asia Region"
+)
+```
+
+### 3.3.6 Western Pacific Region
+
+
+```{r}
+water_long_selected18 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using at least basic drinking water services (% of population)',
+         Region == 'Western Pacific Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected18,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for Western Pacific Region"
+)
+```
+
+## 3.4 People using safely managed drinking water services (% of population)
+
+### 3.4.1 African Region
+
+
+```{r}
+water_long_selected19 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed drinking water services (% of population)',
+         Region == 'African Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected19,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for African Region by Year Group"
+)
+```
+
+
+### 3.4.2 Region of the Americas
+
+
+```{r}
+water_long_selected20 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed drinking water services (% of population)',
+         Region == 'Region of the Americas')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected20,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for Region of the Americas by Year Group"
+)
+```
+
+
+### 3.4.3 European Region
+
+
+```{r}
+water_long_selected21 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed drinking water services (% of population)',
+         Region == 'European Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected21,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for European Region by Year Group"
+)
+```
+
+### 3.4.4 Eastern Mediterranean Region
+
+
+```{r}
+water_long_selected22 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed drinking water services (% of population)',
+         Region == 'Eastern Mediterranean Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected22,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for Eastern Mediterranean Region"
+)
+```
+
+### 3.4.5 South-East Asia Region
+
+
+```{r}
+water_long_selected23 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed drinking water services (% of population)',
+         Region == 'South-East Asia Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected23,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for South-East Asia Region"
+)
+```
+
+### 3.4.6 Western Pacific Region
+
+
+```{r}
+water_long_selected24 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People using safely managed drinking water services (% of population)',
+         Region == 'Western Pacific Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected24,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Drinking Water Services for Western Pacific Region by Year Group"
+)
+```
+
+
+
+## 3.5 People practicing open defecation (% of population)
+
+### 3.5.1 African Region
+
+```{r}
+water_long_selected25 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People practicing open defecation (% of population)',
+         Region == 'African Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected25,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Practicing Open Defecation for African Region by Year Group"
+)
+```
+
+### 3.5.2 Region of the Americas
+
+
+```{r}
+water_long_selected26 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People practicing open defecation (% of population)',
+         Region == 'Region of the Americas')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected26,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Practicing Open Defecation for Region of the Americas"
+)
+```
+
+
+### 3.5.3 European Region
+
+```{r}
+water_long_selected27 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People practicing open defecation (% of population)',
+         Region == 'European Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected27,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Practicing Open Defecation for European Region"
+)
+```
+
+### 3.5.4 Eastern Mediterranean Region
+
+
+```{r}
+water_long_selected28 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People practicing open defecation (% of population)',
+         Region == 'Eastern Mediterranean Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected28,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Practicing Open Defecation for Eastern Mediterranean Region"
+)
+```
+
+### 3.5.5 South-East Asia Region
+
+```{r}
+water_long_selected29 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People practicing open defecation (% of population)',
+         Region == 'South-East Asia Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected29,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Practicing Open Defecation for South-East Asia Region"
+)
+```
+
+### 3.5.6 Western Pacific Region
+
+
+```{r}
+water_long_selected30 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People practicing open defecation (% of population)',
+         Region == 'Western Pacific Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected30,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Practicing Open Defecation for Western Pacific Region"
+)
+```
+
+## 3.6 Level of water stress: freshwater withdrawal as a proportion of available freshwater resources
+
+### 3.6.1 African Region
+
+```{r}
+water_long_selected31 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Level of water stress: freshwater withdrawal as a proportion of available freshwater resources',
+         Region == 'African Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected31,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Level of water stress for African Region by Year Group"
+)
+```
+
+
+
+### 3.6.2 Region of the Americas
+
+
+```{r}
+water_long_selected32 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Level of water stress: freshwater withdrawal as a proportion of available freshwater resources',
+         Region == 'Region of the Americas')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected32,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Level of water stress for Region of the Americas"
+)
+```
+### 3.6.3 European Region
+
+```{r}
+water_long_selected33 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Level of water stress: freshwater withdrawal as a proportion of available freshwater resources',
+         Region == 'European Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected33,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Level of water stress for European Region"
+)
+```
+
+### 3.6.4 Eastern Mediterranean Region
+
+```{r}
+water_long_selected34 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Level of water stress: freshwater withdrawal as a proportion of available freshwater resources',
+         Region == 'Eastern Mediterranean Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected34,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Level of water stress for Eastern Mediterranean Region"
+)
+```
+
+### 3.6.5 South-East Asia Region
+
+
+```{r}
+water_long_selected35 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Level of water stress: freshwater withdrawal as a proportion of available freshwater resources',
+         Region == 'South-East Asia Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected35,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Level of water stress for South-East Asia Region"
+)
+```
+
+
+### 3.6.6 Western Pacific Region
+
+```{r}
+water_long_selected36 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Level of water stress: freshwater withdrawal as a proportion of available freshwater resources',
+         Region == 'Western Pacific Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected36,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Level of water stress for Western Pacific Region"
+)
+```
+
+## 3.7 People with basic handwashing facilities including soap and water (% of population)
+
+### 3.7.1 African Region
+
+
+```{r}
+water_long_selected37 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People with basic handwashing facilities including soap and water (% of population)',
+         Region == 'African Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected37,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Handwashing Facilities for African Region by Year Group"
+)
+```
+
+
+### 3.7.2 Region of the Americas
+
+```{r}
+water_long_selected38 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People with basic handwashing facilities including soap and water (% of population)',
+         Region == 'Region of the Americas')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected38,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Handwashing Facilities for Region of the Americas"
+)
+```
+
+
+
+### 3.7.3 European Region
+
+
+```{r}
+water_long_selected39 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People with basic handwashing facilities including soap and water (% of population)',
+         Region == 'European Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected39,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Handwashing Facilities for European Region"
+)
+```
+
+
+### 3.7.4 Eastern Mediterranean Region
+
+
+```{r}
+water_long_selected40 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People with basic handwashing facilities including soap and water (% of population)',
+         Region == 'Eastern Mediterranean Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected40,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Handwashing Facilities for Eastern Mediterranean Region"
+)
+```
+
+### 3.7.5 South-East Asia Region
+
+
+```{r}
+water_long_selected41 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People with basic handwashing facilities including soap and water (% of population)',
+         Region == 'South-East Asia Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected41,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Handwashing Facilities for South-East Asia Region"
+)
+```
+
+### 3.7.6 Western Pacific Region
+
+
+```{r}
+water_long_selected42 <- water_indicators_long1 %>%
+  filter(Series.Name == 'People with basic handwashing facilities including soap and water (% of population)',
+         Region == 'Western Pacific Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected42,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Basic Handwashing Facilities for Western Pacific Region"
+)
+```
+
+
+## 3.8 Water productivity, total (constant 2015 US$ GDP per cubic meter of total freshwater withdrawal)
+
+### 3.8.1 African Region
+
+```{r}
+water_long_selected43 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Water productivity, total (constant 2015 US$ GDP per cubic meter of total freshwater withdrawal)',
+         Region == 'African Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected43,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Water Productivity for African Region by Year Group"
+)
+```
+
+
+### 3.8.2 Region of the Americas
+
+
+```{r}
+water_long_selected44 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Water productivity, total (constant 2015 US$ GDP per cubic meter of total freshwater withdrawal)',
+         Region == 'Region of the Americas')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected44,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Water Productivity for Region of the Americas"
+)
+```
+
+
+### 3.8.3 European Region
+
+```{r}
+water_long_selected45 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Water productivity, total (constant 2015 US$ GDP per cubic meter of total freshwater withdrawal)',
+         Region == 'European Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected45,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Water Productivity for European Region"
+)
+```
+### 3.8.4 Eastern Mediterranean Region
+
+
+```{r}
+water_long_selected46 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Water productivity, total (constant 2015 US$ GDP per cubic meter of total freshwater withdrawal)',
+         Region == 'Eastern Mediterranean Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected46,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Water Productivity for Eastern Mediterranean Region"
+)
+```
+
+### 3.8.5 South-East Asia Region
+
+```{r}
+water_long_selected47 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Water productivity, total (constant 2015 US$ GDP per cubic meter of total freshwater withdrawal)',
+         Region == 'South-East Asia Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected47,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Water Productivity for South-East Asia Region"
+)
+```
+
+### 3.8.6 Western Pacific Region
+
+```{r}
+water_long_selected48 <- water_indicators_long1 %>%
+  filter(Series.Name == 'Water productivity, total (constant 2015 US$ GDP per cubic meter of total freshwater withdrawal)',
+         Region == 'Western Pacific Region')
+           
+```
+
+```{r}
+ggbetweenstats(
+  data = water_long_selected48,
+  x = year_group, 
+  y = value, 
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "significant", 
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Comparison of Water Productivity for Western Pacific Region"
+)
+```
