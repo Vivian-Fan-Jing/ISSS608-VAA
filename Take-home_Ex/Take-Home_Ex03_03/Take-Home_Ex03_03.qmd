@@ -549,7 +549,7 @@ ggbetweenstats(
   pairwise.display = "significant", 
   p.adjust.method = "fdr",
   messages = FALSE,
-  title = "Comparison of Basic Drinking Water Services for African Region by Year Group"
+  title = "Comparison of Safely Managed Drinking Water Services for African Region by Year Group"
 )
 ```
 
@@ -575,7 +575,7 @@ ggbetweenstats(
   pairwise.display = "significant", 
   p.adjust.method = "fdr",
   messages = FALSE,
-  title = "Comparison of Basic Drinking Water Services for Region of the Americas by Year Group"
+  title = "Comparison of Safely Managed Drinking Water Services for Region of the Americas by Year Group"
 )
 ```
 
@@ -601,7 +601,7 @@ ggbetweenstats(
   pairwise.display = "significant", 
   p.adjust.method = "fdr",
   messages = FALSE,
-  title = "Comparison of Basic Drinking Water Services for European Region by Year Group"
+  title = "Comparison of Safely Managed Drinking Water Services for European Region by Year Group"
 )
 ```
 
@@ -626,7 +626,7 @@ ggbetweenstats(
   pairwise.display = "significant", 
   p.adjust.method = "fdr",
   messages = FALSE,
-  title = "Comparison of Basic Drinking Water Services for Eastern Mediterranean Region"
+  title = "Comparison of Safely Managed Drinking Water Services for Eastern Mediterranean Region"
 )
 ```
 
@@ -651,7 +651,7 @@ ggbetweenstats(
   pairwise.display = "significant", 
   p.adjust.method = "fdr",
   messages = FALSE,
-  title = "Comparison of Basic Drinking Water Services for South-East Asia Region"
+  title = "Comparison of Safely Managed Drinking Water Services for South-East Asia Region"
 )
 ```
 
@@ -676,7 +676,7 @@ ggbetweenstats(
   pairwise.display = "significant", 
   p.adjust.method = "fdr",
   messages = FALSE,
-  title = "Comparison of Basic Drinking Water Services for Western Pacific Region by Year Group"
+  title = "Comparison of Safely Managed Drinking Water Services for Western Pacific Region by Year Group"
 )
 ```
 
